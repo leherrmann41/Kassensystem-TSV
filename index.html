@@ -31,12 +31,15 @@
       box-sizing: border-box;
     }
 
-    body {
+    html, body {
       font-family: system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
       background-color: var(--surface-bg);
       color: var(--text-main);
-      min-height: 100vh;
-      overflow-x: hidden;
+      height: 100vh;
+      width: 100vw;
+      margin: 0;
+      padding: 0;
+      overflow: hidden;
       user-select: none;
       -webkit-user-select: none;
     }
@@ -49,26 +52,82 @@
     .app-header {
       background-color: var(--primary-slate);
       color: #ffffff;
-      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+      height: 44px;
+      padding: 0.25rem 0.75rem;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.12);
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
     }
 
     /* Card styling */
     .card {
       border: 0 !important;
-      border-radius: 12px;
+      border-radius: 10px;
       background-color: var(--card-bg);
+      height: 100%;
+      display: flex;
+      flex-direction: column;
     }
 
-    /* Layout heights for tablet landscape */
+    /* Screen-filling layout for tablet & desktop */
     .main-container {
-      height: calc(100vh - 68px);
-      padding: 0.75rem;
+      height: calc(100vh - 44px);
+      padding: 0.35rem 0.5rem;
+      margin: 0;
+      width: 100%;
+      max-width: 100% !important;
+    }
+
+    .pos-main-row {
+      height: 100%;
+      margin-left: -0.25rem;
+      margin-right: -0.25rem;
+    }
+
+    .pos-col {
+      padding-left: 0.25rem;
+      padding-right: 0.25rem;
+      height: 100%;
+    }
+
+    /* Landscape column distribution: Left ca. 73%, Right ca. 27% */
+    @media (min-width: 992px) {
+      .pos-catalog-col {
+        flex: 0 0 72%;
+        max-width: 72%;
+        height: 100%;
+      }
+      .pos-cart-col {
+        flex: 0 0 28%;
+        max-width: 28%;
+        height: 100%;
+      }
+    }
+
+    @media (min-width: 1360px) {
+      .pos-catalog-col {
+        flex: 0 0 74%;
+        max-width: 74%;
+      }
+      .pos-cart-col {
+        flex: 0 0 26%;
+        max-width: 26%;
+      }
     }
 
     @media (max-width: 991.98px) {
+      html, body {
+        overflow-y: auto;
+        height: auto;
+      }
       .main-container {
         height: auto;
-        min-height: calc(100vh - 68px);
+        min-height: calc(100vh - 44px);
+      }
+      .pos-catalog-col, .pos-cart-col {
+        height: auto;
+        margin-bottom: 0.5rem;
       }
     }
 
@@ -76,36 +135,37 @@
       height: 100%;
       display: flex;
       flex-direction: column;
+      min-height: 0;
     }
 
-    /* Product Grid */
+    /* Category Pills Filter */
     .category-pills {
       display: flex;
-      gap: 0.5rem;
+      gap: 0.35rem;
       overflow-x: auto;
-      padding-bottom: 0.5rem;
-      scrollbar-width: thin;
+      padding-bottom: 0.25rem;
+      scrollbar-width: none;
+      flex-shrink: 0;
     }
 
     .category-pills::-webkit-scrollbar {
-      height: 4px;
-    }
-    .category-pills::-webkit-scrollbar-thumb {
-      background: #cbd5e1;
-      border-radius: 4px;
+      display: none;
     }
 
     .cat-btn {
       white-space: nowrap;
-      font-size: 0.9rem;
+      font-size: 0.82rem;
       font-weight: 600;
-      padding: 0.5rem 1rem;
+      padding: 0.25rem 0.65rem;
       border-radius: 50rem;
-      border: 1px solid #e5e7eb;
+      border: 1px solid #e2e8f0;
       background: #ffffff;
       color: var(--primary-slate);
       transition: all 0.15s ease;
-      min-height: 42px;
+      min-height: 32px;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.3rem;
     }
 
     .cat-btn.active {
@@ -115,22 +175,51 @@
       box-shadow: 0 2px 4px rgba(32, 41, 56, 0.2);
     }
 
+    /* Product Grid Container */
     .product-grid-container {
       flex: 1;
+      display: flex;
+      flex-direction: column;
+      min-height: 0;
       overflow-y: auto;
-      padding-right: 4px;
+      padding-right: 2px;
       scrollbar-width: thin;
     }
 
     .product-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
-      gap: 0.75rem;
+      gap: 0.35rem;
     }
 
-    @media (min-width: 1400px) {
+    /* All articles mode: fills 100% height, zero vertical scroll in landscape */
+    @media (min-width: 1200px) {
+      .product-grid.grid-all-view {
+        height: 100%;
+        grid-template-columns: repeat(7, 1fr);
+        grid-auto-rows: 1fr;
+      }
+    }
+
+    @media (min-width: 992px) and (max-width: 1199.98px) {
+      .product-grid.grid-all-view {
+        height: 100%;
+        grid-template-columns: repeat(6, 1fr);
+        grid-auto-rows: 1fr;
+      }
+    }
+
+    @media (min-width: 992px) {
+      .product-grid:not(.grid-all-view) {
+        grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+        grid-auto-rows: minmax(75px, auto);
+        align-content: start;
+      }
+    }
+
+    @media (max-width: 991.98px) {
       .product-grid {
-        grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+        grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+        grid-auto-rows: minmax(70px, auto);
       }
     }
 
@@ -138,83 +227,139 @@
     .product-tile {
       position: relative;
       background: #ffffff;
-      border: 1px solid #e5e7eb;
-      border-radius: 12px;
-      padding: 0.75rem 0.6rem;
-      min-height: 86px;
+      border: 1px solid #e2e8f0;
+      border-radius: 9px;
+      padding: 0.4rem 0.55rem;
+      min-height: 60px;
+      height: 100%;
       display: flex;
       flex-direction: column;
       justify-content: space-between;
       text-align: left;
       cursor: pointer;
-      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
-      transition: transform 0.08s ease, box-shadow 0.08s ease, border-color 0.1s ease, background-color 0.1s ease;
+      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
+      transition: transform 0.08s ease, box-shadow 0.08s ease, border-color 0.1s ease, background 0.1s ease;
+      overflow: hidden;
+    }
+
+    .product-tile:hover {
+      border-color: #cbd5e1;
+      box-shadow: 0 3px 6px rgba(0, 0, 0, 0.08);
     }
 
     .product-tile:active {
       transform: scale(0.96);
-      background-color: #f8fafc;
-      border-color: var(--primary-slate);
     }
 
     .product-tile .prod-title {
       font-weight: 700;
-      font-size: 0.95rem;
-      line-height: 1.25;
+      font-size: clamp(0.78rem, 0.88vw, 0.94rem);
+      line-height: 1.18;
       color: var(--primary-slate);
-      margin-bottom: 0.35rem;
+      margin-bottom: 0.15rem;
       display: -webkit-box;
-      -webkit-line-clamp: 2;
+      -webkit-line-clamp: 3;
       -webkit-box-orient: vertical;
       overflow: hidden;
+      word-break: break-word;
     }
 
     .product-tile .prod-footer {
       display: flex;
       justify-content: space-between;
-      align-items: center;
+      align-items: flex-end;
       margin-top: auto;
+      gap: 0.2rem;
     }
 
     .product-tile .prod-price {
       font-weight: 800;
-      font-size: 1.05rem;
-      color: var(--accent-emerald-dark);
+      font-size: clamp(0.92rem, 1.05vw, 1.15rem);
+      color: #047857;
       letter-spacing: -0.02em;
+      white-space: nowrap;
+    }
+
+    .product-tile .prod-cat-tag {
+      font-size: 0.65rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+      opacity: 0.6;
+      white-space: nowrap;
     }
 
     .product-tile .prod-badge-count {
       position: absolute;
-      top: -6px;
-      right: -6px;
+      top: -4px;
+      right: -4px;
       background: var(--primary-slate);
       color: #ffffff;
-      font-size: 0.75rem;
+      font-size: 0.72rem;
       font-weight: 800;
       border-radius: 50rem;
-      min-width: 24px;
-      height: 24px;
+      min-width: 22px;
+      height: 22px;
       display: flex;
       align-items: center;
       justify-content: center;
       border: 2px solid #ffffff;
-      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+      z-index: 2;
     }
 
+    /* Color Coding by Category */
     .product-tile.category-drink {
-      border-left: 5px solid #3b82f6;
+      border-left: 5px solid #2563eb;
+      background: linear-gradient(135deg, #f0f7ff 0%, #ffffff 50%);
     }
+    .product-tile.category-drink:hover {
+      border-color: #93c5fd;
+      border-left-color: #2563eb;
+    }
+    .product-tile.category-drink .prod-cat-tag {
+      color: #1d4ed8;
+    }
+
     .product-tile.category-food {
-      border-left: 5px solid #f97316;
+      border-left: 5px solid #ea580c;
+      background: linear-gradient(135deg, #fff7ed 0%, #ffffff 50%);
     }
+    .product-tile.category-food:hover {
+      border-color: #fdba74;
+      border-left-color: #ea580c;
+    }
+    .product-tile.category-food .prod-cat-tag {
+      color: #c2410c;
+    }
+
     .product-tile.category-sweets {
-      border-left: 5px solid #ec4899;
+      border-left: 5px solid #db2777;
+      background: linear-gradient(135deg, #fdf2f8 0%, #ffffff 50%);
     }
+    .product-tile.category-sweets:hover {
+      border-color: #f9a8d4;
+      border-left-color: #db2777;
+    }
+    .product-tile.category-sweets .prod-cat-tag {
+      color: #be185d;
+    }
+
     .product-tile.category-deposit {
-      border-left: 5px solid #10b981;
+      border-left: 5px solid #059669;
+      background: linear-gradient(135deg, #ecfdf5 0%, #ffffff 50%);
     }
+    .product-tile.category-deposit:hover {
+      border-color: #6ee7b7;
+      border-left-color: #059669;
+    }
+    .product-tile.category-deposit .prod-cat-tag {
+      color: #047857;
+    }
+
     .product-tile.category-other {
       border-left: 5px solid #64748b;
+      background: linear-gradient(135deg, #f8fafc 0%, #ffffff 50%);
     }
 
     /* Cart & Cashier Section */
@@ -222,71 +367,74 @@
       display: flex;
       flex-direction: column;
       height: 100%;
+      min-height: 0;
     }
 
     .cart-table-wrapper {
       flex: 1;
       overflow-y: auto;
       scrollbar-width: thin;
-      min-height: 140px;
+      min-height: 80px;
     }
 
     .cart-table th {
       position: sticky;
       top: 0;
       z-index: 5;
-      font-size: 0.8rem;
+      font-size: 0.75rem;
       text-transform: uppercase;
-      letter-spacing: 0.05em;
-      padding: 0.6rem 0.5rem;
+      letter-spacing: 0.04em;
+      padding: 0.45rem 0.4rem;
     }
 
     .cart-table td {
       vertical-align: middle;
-      padding: 0.45rem 0.5rem;
+      padding: 0.35rem 0.4rem;
+      font-size: 0.88rem;
     }
 
     .qty-btn {
-      width: 38px;
-      height: 38px;
+      width: 28px;
+      height: 28px;
       padding: 0;
       display: inline-flex;
       align-items: center;
       justify-content: center;
       font-weight: bold;
-      font-size: 1.1rem;
-      border-radius: 8px;
+      font-size: 0.95rem;
+      border-radius: 6px;
       touch-action: manipulation;
     }
 
     .qty-display {
       font-weight: 800;
-      min-width: 28px;
+      min-width: 22px;
       text-align: center;
       display: inline-block;
-      font-size: 1.05rem;
+      font-size: 0.95rem;
     }
 
     /* Summary & Checkout Section */
     .checkout-panel {
       background: #f8fafc;
-      border-top: 2px solid #e2e8f0;
-      border-radius: 0 0 12px 12px;
-      padding: 0.85rem;
+      border-top: 1.5px solid #e2e8f0;
+      border-radius: 0 0 10px 10px;
+      padding: 0.5rem 0.65rem;
+      flex-shrink: 0;
     }
 
     .total-display-card {
       background: #ffffff;
       border: 1px solid #e2e8f0;
-      border-radius: 10px;
-      padding: 0.5rem 0.85rem;
+      border-radius: 8px;
+      padding: 0.35rem 0.65rem;
       display: flex;
       justify-content: space-between;
       align-items: baseline;
     }
 
     .total-amount {
-      font-size: 2rem;
+      font-size: clamp(1.5rem, 1.8vw, 1.9rem);
       font-weight: 900;
       color: var(--primary-slate);
       line-height: 1;
@@ -297,23 +445,24 @@
     .quick-cash-grid {
       display: grid;
       grid-template-columns: repeat(5, 1fr);
-      gap: 0.35rem;
-      margin-top: 0.5rem;
+      gap: 0.25rem;
+      margin-top: 0.25rem;
     }
 
     .btn-quick-cash {
       font-weight: 700;
-      font-size: 0.9rem;
-      padding: 0.45rem 0.15rem;
-      border-radius: 8px;
+      font-size: 0.82rem;
+      padding: 0.35rem 0.1rem;
+      border-radius: 6px;
       border: 1px solid #cbd5e1;
       background: #ffffff;
       color: var(--primary-slate);
-      min-height: 44px;
+      min-height: 36px;
       display: flex;
       align-items: center;
       justify-content: center;
       transition: all 0.1s ease;
+      white-space: nowrap;
     }
 
     .btn-quick-cash:active {
@@ -330,14 +479,14 @@
 
     /* Change / Rückgeld Display */
     .change-box {
-      border-radius: 10px;
-      padding: 0.6rem 0.85rem;
+      border-radius: 8px;
+      padding: 0.4rem 0.65rem;
       display: flex;
       justify-content: space-between;
       align-items: center;
       font-weight: 700;
       transition: all 0.2s ease;
-      min-height: 52px;
+      min-height: 44px;
     }
 
     .change-box.status-ok {
@@ -359,7 +508,7 @@
     }
 
     .change-amount {
-      font-size: 1.6rem;
+      font-size: clamp(1.25rem, 1.5vw, 1.6rem);
       font-weight: 900;
       letter-spacing: -0.02em;
     }
@@ -370,15 +519,15 @@
       border: none;
       color: #ffffff;
       font-weight: 800;
-      font-size: 1.15rem;
-      padding: 0.75rem 1rem;
-      border-radius: 10px;
+      font-size: 1.05rem;
+      padding: 0.55rem 0.75rem;
+      border-radius: 8px;
       box-shadow: 0 4px 6px -1px rgba(16, 185, 129, 0.3);
-      min-height: 56px;
+      min-height: 48px;
       display: flex;
       align-items: center;
       justify-content: center;
-      gap: 0.5rem;
+      gap: 0.4rem;
       transition: all 0.1s ease;
     }
 
@@ -446,15 +595,15 @@
   </div>
 
   <!-- Header -->
-  <header class="app-header px-3 py-2">
-    <div class="d-flex justify-content-between align-items-center">
+  <header class="app-header px-3 py-1">
+    <div class="d-flex justify-content-between align-items-center w-100">
       <div class="d-flex align-items-center gap-2">
-        <div class="bg-white text-dark rounded-3 p-1 px-2 fw-bold d-flex align-items-center gap-1 shadow-sm">
+        <div class="bg-white text-dark rounded-3 p-1 px-2 fw-bold d-flex align-items-center gap-1 shadow-sm" style="font-size: 0.9rem;">
           <i class="bi bi-shop text-primary"></i>
           <span id="headerAppName">Besenfest TSV Billigheim</span>
         </div>
         <span class="text-white-50 d-none d-md-inline">|</span>
-        <span class="badge bg-dark border border-secondary text-light d-none d-md-inline" id="headerSubtitle">Festbetrieb 2025</span>
+        <span class="badge bg-dark border border-secondary text-light d-none d-md-inline" id="headerSubtitle" style="font-size: 0.8rem;">Festbetrieb 2025</span>
       </div>
 
       <div class="d-flex align-items-center gap-2">
@@ -478,8 +627,9 @@
         </button>
 
         <!-- Fullscreen toggle -->
-        <button class="btn btn-dark btn-sm px-2 py-1" onclick="toggleFullscreen()" title="Vollbild umschalten">
-          <i class="bi bi-fullscreen" id="fullscreenIcon"></i>
+        <button class="btn btn-outline-light btn-sm px-2 py-1 fw-bold d-flex align-items-center gap-1 shadow-sm" onclick="toggleFullscreen()" id="fullscreenBtn" title="In Vollbildmodus wechseln (F11)">
+          <i class="bi bi-arrows-fullscreen" id="fullscreenIcon"></i>
+          <span id="fullscreenText">Vollbild</span>
         </button>
       </div>
     </div>
@@ -487,14 +637,14 @@
 
   <!-- Main 2-Column Layout -->
   <div class="container-fluid main-container">
-    <div class="row g-2 h-100">
+    <div class="row g-2 h-100 pos-main-row">
 
-      <!-- LEFT COLUMN: Product Catalog (ca. 62% width on lg+) -->
-      <div class="col-12 col-lg-7 col-xl-7 h-100">
-        <div class="card shadow-sm border-0 h-content-full p-2 p-md-3">
+      <!-- LEFT COLUMN: Product Catalog (ca. 73% width in landscape) -->
+      <div class="col-12 col-lg-8 col-xl-9 pos-col pos-catalog-col">
+        <div class="card shadow-sm border-0 h-100 p-2">
           
           <!-- Category Filter Bar (ohne Suchfenster) -->
-          <div class="mb-2">
+          <div class="mb-1">
             <div class="category-pills" id="categoryPillsContainer">
               <button class="cat-btn active" onclick="setCategoryFilter('all')">
                 <i class="bi bi-grid-fill me-1"></i> Alle Artikel
@@ -505,7 +655,7 @@
 
           <!-- Product Grid List -->
           <div class="product-grid-container">
-            <div class="product-grid" id="productGrid">
+            <div class="product-grid grid-all-view" id="productGrid">
               <!-- Rendered dynamically -->
             </div>
           </div>
@@ -513,9 +663,9 @@
         </div>
       </div>
 
-      <!-- RIGHT COLUMN: Cart & Cash Register (ca. 38% width on lg+) -->
-      <div class="col-12 col-lg-5 col-xl-5 h-100">
-        <div class="card shadow-sm border-0 h-content-full overflow-hidden">
+      <!-- RIGHT COLUMN: Cart & Cash Register (ca. 27% width in landscape) -->
+      <div class="col-12 col-lg-4 col-xl-3 pos-col pos-cart-col">
+        <div class="card shadow-sm border-0 h-100 overflow-hidden p-2">
           
           <div class="cart-container">
             
@@ -524,9 +674,9 @@
               <table class="table table-sm table-hover align-middle mb-0 cart-table">
                 <thead class="bg-nav-custom text-white">
                   <tr>
-                    <th style="width: 42%;">Artikel</th>
+                    <th style="width: 44%;">Artikel</th>
                     <th style="width: 28%; text-align: center;">Menge</th>
-                    <th style="width: 22%; text-align: right;">Gesamt</th>
+                    <th style="width: 20%; text-align: right;">Gesamt</th>
                     <th style="width: 8%; text-align: center;"></th>
                   </tr>
                 </thead>
@@ -547,59 +697,54 @@
             <div class="checkout-panel">
               
               <!-- Dynamic Pfand Quick Bar (Active when drinks or deposit items are in cart) -->
-              <div id="pfandQuickBar" class="p-2 mb-2 rounded-3 border bg-white shadow-sm align-items-center justify-content-between" style="border-left: 4px solid #10b981 !important; display: none;">
-                <div class="d-flex align-items-center gap-2">
-                  <div class="bg-success text-white rounded-circle d-flex align-items-center justify-content-center flex-shrink-0" style="width: 32px; height: 32px; font-size: 0.95rem;">
+              <div id="pfandQuickBar" class="p-2 mb-2 rounded-3 border bg-white shadow-sm d-flex flex-wrap align-items-center justify-content-between gap-1" style="border-left: 4px solid #10b981 !important; display: none;">
+                <div class="d-flex align-items-center gap-1">
+                  <div class="bg-success text-white rounded-circle d-flex align-items-center justify-content-center flex-shrink-0" style="width: 26px; height: 26px; font-size: 0.85rem;">
                     <i class="bi bi-arrow-repeat"></i>
                   </div>
-                  <div style="line-height: 1.2;">
-                    <div class="fw-bold text-dark" style="font-size: 0.88rem;">Pfand Schnellwahl (2,00 €)</div>
-                    <small class="text-muted" style="font-size: 0.75rem;" id="pfandQuickInfo">0 Getränke • 0x Pfand</small>
+                  <div style="line-height: 1.1;">
+                    <div class="fw-bold text-dark" style="font-size: 0.82rem;">Pfand Schnellwahl (2 €)</div>
+                    <small class="text-muted" style="font-size: 0.72rem;" id="pfandQuickInfo">0 Getränke • 0x Pfand</small>
                   </div>
                 </div>
                 <div class="d-flex align-items-center gap-1">
-                  <button class="btn btn-outline-success btn-sm fw-bold px-2 py-1" onclick="syncPfandWithDrinks()" title="Pfand passend zur Anzahl der Getränke setzen">
+                  <button class="btn btn-outline-success btn-sm fw-bold px-2 py-0" style="font-size: 0.78rem; height: 28px;" onclick="syncPfandWithDrinks()" title="Pfand passend zur Anzahl der Getränke setzen">
                     <i class="bi bi-lightning-charge-fill"></i> Passend (<span id="pfandDrinkCountBadge">0</span>)
                   </button>
-                  <button class="btn btn-outline-secondary qty-btn" style="width: 34px; height: 34px; font-size: 1rem;" onclick="quickAdjustPfand(-1)" title="Pfand verringern / Rückgabe erfassen">
-                    <i class="bi bi-dash-lg"></i>
+                  <button class="btn btn-outline-secondary qty-btn" onclick="quickAdjustPfand(-1)" title="Pfand verringern / Rückgabe erfassen">
+                    <i class="bi bi-dash"></i>
                   </button>
-                  <span class="qty-display" style="min-width: 24px; font-size: 1rem;" id="pfandQuickCount">0</span>
-                  <button class="btn btn-outline-success qty-btn" style="width: 34px; height: 34px; font-size: 1rem;" onclick="quickAdjustPfand(1)" title="Pfand hinzufügen">
-                    <i class="bi bi-plus-lg"></i>
+                  <span class="qty-display" id="pfandQuickCount">0</span>
+                  <button class="btn btn-outline-success qty-btn" onclick="quickAdjustPfand(1)" title="Pfand hinzufügen">
+                    <i class="bi bi-plus"></i>
                   </button>
                 </div>
               </div>
 
               <!-- Total Display -->
               <div class="total-display-card mb-2">
-                <span class="text-muted fw-bold text-uppercase" style="font-size: 0.85rem;">Gesamtsumme</span>
+                <span class="text-muted fw-bold text-uppercase" style="font-size: 0.8rem;">Gesamtsumme</span>
                 <span class="total-amount" id="totalDisplay">0,00 €</span>
               </div>
 
               <!-- Given Amount Input & Quick Buttons -->
-              <div class="row g-2 align-items-center mb-2">
-                <div class="col-5">
-                  <label class="form-label text-muted small fw-bold mb-1 d-flex justify-content-between">
-                    <span>Gegeben:</span>
-                    <a href="javascript:void(0)" class="text-decoration-none text-danger" onclick="clearGiven()">Löschen</a>
-                  </label>
-                  <div class="input-group">
-                    <input type="number" step="0.01" min="0" id="givenInput" class="form-control form-control-lg fw-bold text-end" placeholder="0,00" oninput="handleGivenChange(this.value)">
-                    <span class="input-group-text fw-bold">€</span>
-                  </div>
+              <div class="mb-2">
+                <div class="d-flex justify-content-between align-items-center mb-1">
+                  <span class="text-muted small fw-bold">Gegeben:</span>
+                  <a href="javascript:void(0)" class="text-decoration-none text-danger small fw-bold" onclick="clearGiven()">
+                    <i class="bi bi-x-circle me-1"></i>Löschen
+                  </a>
                 </div>
-
-                <!-- Quick Buttons Column -->
-                <div class="col-7">
-                  <label class="form-label text-muted small fw-bold mb-1">Schnellwahl Bargeld:</label>
-                  <div class="d-flex gap-1 flex-wrap">
-                    <button class="btn btn-outline-secondary btn-sm flex-fill fw-bold py-2" onclick="setGivenExact()">Passend</button>
-                    <button class="btn btn-outline-secondary btn-sm flex-fill fw-bold py-2" onclick="setGivenPreset(5)">5 €</button>
-                    <button class="btn btn-outline-secondary btn-sm flex-fill fw-bold py-2" onclick="setGivenPreset(10)">10 €</button>
-                    <button class="btn btn-outline-secondary btn-sm flex-fill fw-bold py-2" onclick="setGivenPreset(20)">20 €</button>
-                    <button class="btn btn-outline-secondary btn-sm flex-fill fw-bold py-2" onclick="setGivenPreset(50)">50 €</button>
-                  </div>
+                <div class="input-group input-group-sm mb-1">
+                  <input type="number" step="0.01" min="0" id="givenInput" class="form-control form-control-lg fw-bold text-end" placeholder="0,00" oninput="handleGivenChange(this.value)">
+                  <span class="input-group-text fw-bold">€</span>
+                </div>
+                <div class="quick-cash-grid">
+                  <button class="btn btn-outline-secondary btn-quick-cash" onclick="setGivenExact()">Passend</button>
+                  <button class="btn btn-outline-secondary btn-quick-cash" onclick="setGivenPreset(5)">5 €</button>
+                  <button class="btn btn-outline-secondary btn-quick-cash" onclick="setGivenPreset(10)">10 €</button>
+                  <button class="btn btn-outline-secondary btn-quick-cash" onclick="setGivenPreset(20)">20 €</button>
+                  <button class="btn btn-outline-secondary btn-quick-cash" onclick="setGivenPreset(50)">50 €</button>
                 </div>
               </div>
 
@@ -607,7 +752,7 @@
               <div id="changeBox" class="change-box status-neutral mb-2">
                 <div>
                   <div class="small text-uppercase" id="changeLabel">Rückgeld</div>
-                  <small id="changeSubtext" class="opacity-75">Gegebenen Betrag eingeben</small>
+                  <small id="changeSubtext" class="opacity-75" style="font-size: 0.72rem;">Gegebenen Betrag wählen</small>
                 </div>
                 <div class="change-amount" id="changeDisplay">0,00 €</div>
               </div>
@@ -945,15 +1090,15 @@
      */
 
     // --- DEFAULT DATA & CONFIG ---
-    const CURRENT_MENU_VERSION = "tsv_billigheim_2025_v1";
+    const CURRENT_MENU_VERSION = "tsv_billigheim_2025_v2";
 
     const DEFAULT_ARTICLES = [
       // Getränke
-      { id: "art_1", name: "Cola, Fanta, Spezi, Schorle 0,4l", price: 3.00, category: "drink" },
+      { id: "art_1", name: "Cola, Fanta, Spezi, Johannisbeersch., Apfelsch. 0,4l", price: 3.00, category: "drink" },
       { id: "art_2", name: "Sprudel 0,7l", price: 2.50, category: "drink" },
       { id: "art_3", name: "Bier, Radler 0,4l", price: 3.50, category: "drink" },
-      { id: "art_4", name: "Bier alkoholfrei 0,3l", price: 2.80, category: "drink" },
-      { id: "art_5", name: "Weizen, Weizen alkoholfrei 0,5l", price: 3.80, category: "drink" },
+      { id: "art_4", name: "Bier alkoholfrei 0,3l", price: 3.00, category: "drink" },
+      { id: "art_5", name: "Weizen, Weizen alkoholfrei 0,5l", price: 4.00, category: "drink" },
       { id: "art_6", name: "Schorle 0,25l", price: 3.00, category: "drink" },
       { id: "art_7", name: "Wein 0,25l", price: 3.50, category: "drink" },
       { id: "art_8", name: "Schnaps, Jägermeister", price: 2.00, category: "drink" },
@@ -964,21 +1109,21 @@
       { id: "art_11", name: "Kuchen", price: 2.00, category: "sweets" },
 
       // Essen & Besengerichte
-      { id: "art_12", name: "Schlachtplatte m. Sauerkraut & Besenbrot", price: 10.00, category: "food" },
-      { id: "art_13", name: "Hausmacherteller m. Besenbrot", price: 6.50, category: "food" },
-      { id: "art_14", name: "1P grobe Bratwürste m. Besenbrot", price: 6.00, category: "food" },
-      { id: "art_15", name: "Besenbrot mit Käse & Zwiebel", price: 5.00, category: "food" },
+      { id: "art_12", name: "Schlachtplatte m. Sauerkraut und Besenbrot (Leber- Blutwurst, Salzfleisch, Bauch)", price: 10.00, category: "food" },
+      { id: "art_13", name: "Hausmacherteller mit Besenbrot (Leber- Blutwurst und Schwartenmagen)", price: 6.50, category: "food" },
+      { id: "art_14", name: "1P grobe Bratwürste mit Besenbrot", price: 6.00, category: "food" },
+      { id: "art_15", name: "Besenbrot mit Käse und Zwiebel", price: 5.00, category: "food" },
       { id: "art_16", name: "Besenbrot mit Kochkäse", price: 4.00, category: "food" },
       { id: "art_17", name: "Brätbrot mit Zwiebel", price: 5.00, category: "food" },
-      { id: "art_18", name: "Schupfnudeln mit Sauerkraut", price: 5.00, category: "food" },
-      { id: "art_19", name: "Schupfnudeln mit Apfelmus", price: 5.00, category: "food" },
-      { id: "art_20", name: "Vegane Maultaschen", price: 3.80, category: "food" },
-      { id: "art_21", name: "Schupfnudeln (Portion)", price: 2.50, category: "food" },
-      { id: "art_22", name: "Sauerkraut (Portion)", price: 2.50, category: "food" },
+      { id: "art_18", name: "Schupfnudel mit Sauerkraut", price: 5.00, category: "food" },
+      { id: "art_19", name: "Schupfnudel mit Apfelmuß", price: 5.00, category: "food" },
+      { id: "art_20", name: "Vegane Maultaschen", price: 4.00, category: "food" },
+      { id: "art_21", name: "Schupfnudel", price: 2.50, category: "food" },
+      { id: "art_22", name: "Sauerkraut", price: 2.50, category: "food" },
       { id: "art_23", name: "Kürbiscremesuppe m. Brot", price: 4.00, category: "food" },
       { id: "art_24", name: "Metzelpfeffer", price: 1.50, category: "food" },
       { id: "art_25", name: "Metzelpfeffer mit Brot", price: 2.00, category: "food" },
-      { id: "art_26", name: "Brot (Portion)", price: 0.50, category: "food" },
+      { id: "art_26", name: "Brot", price: 0.50, category: "food" },
 
       // Pfand
       { id: "art_27", name: "Pfand (+)", price: 2.00, category: "deposit" },
@@ -1188,6 +1333,10 @@
       categories.forEach(cat => {
         const isActive = currentCategoryFilter === cat ? 'active' : '';
         const label = CATEGORY_NAMES[cat] || cat;
+        const count = cat === 'all' 
+          ? articles.length 
+          : articles.filter(a => (a.category || 'other') === cat).length;
+
         let icon = 'bi-tag';
         if (cat === 'all') icon = 'bi-grid-fill';
         else if (cat === 'food') icon = 'bi-fire';
@@ -1197,7 +1346,9 @@
 
         html += `
           <button class="cat-btn ${isActive}" onclick="setCategoryFilter('${cat}')">
-            <i class="bi ${icon} me-1"></i> ${label}
+            <i class="bi ${icon}"></i> 
+            <span>${label}</span>
+            <span class="badge rounded-pill bg-light text-dark border ms-1" style="font-size: 0.72rem; opacity: 0.9;">${count}</span>
           </button>
         `;
       });
@@ -1220,6 +1371,9 @@
 
       if (currentCategoryFilter !== 'all') {
         filtered = filtered.filter(a => (a.category || 'other') === currentCategoryFilter);
+        grid.classList.remove('grid-all-view');
+      } else {
+        grid.classList.add('grid-all-view');
       }
 
       if (filtered.length === 0) {
@@ -1240,16 +1394,15 @@
           : '';
 
         const catClass = `category-${art.category || 'other'}`;
+        const catName = CATEGORY_NAMES[art.category] || '';
 
         html += `
-          <div class="product-tile ${catClass}" onclick="addToCart('${art.id}')">
+          <div class="product-tile ${catClass}" onclick="addToCart('${art.id}')" title="${escapeHtml(art.name)}">
             ${badgeHtml}
             <div class="prod-title">${escapeHtml(art.name)}</div>
             <div class="prod-footer">
               <span class="prod-price">${formatCurrency(art.price)}</span>
-              <span class="btn btn-sm btn-light p-1 px-2 border rounded-circle text-primary">
-                <i class="bi bi-plus-lg"></i>
-              </span>
+              <span class="prod-cat-tag">${escapeHtml(catName)}</span>
             </div>
           </div>
         `;
@@ -1445,10 +1598,10 @@
         html += `
           <tr>
             <td>
-              <div class="fw-bold text-dark text-truncate" style="max-width: 170px;" title="${escapeHtml(article.name)}">
+              <div class="fw-bold text-dark text-truncate" style="max-width: 135px;" title="${escapeHtml(article.name)}">
                 ${escapeHtml(article.name)}
               </div>
-              <small class="text-muted">${formatCurrency(article.price)} / Stk.</small>
+              <small class="text-muted" style="font-size: 0.78rem;">${formatCurrency(article.price)} / Stk.</small>
             </td>
             <td style="text-align: center;">
               <div class="d-inline-flex align-items-center gap-1">
@@ -1641,15 +1794,41 @@
 
     // --- FULLSCREEN HANDLER ---
     function toggleFullscreen() {
-      const icon = document.getElementById('fullscreenIcon');
+      playBeep('click');
       if (!document.fullscreenElement) {
-        document.documentElement.requestFullscreen().then(() => {
-          icon.className = 'bi bi-fullscreen-exit';
-        }).catch(err => {});
+        document.documentElement.requestFullscreen().catch(err => {
+          showToast("Vollbild", "Tippe F11 auf der Tastatur für den Vollbildmodus.");
+        });
       } else {
-        document.exitFullscreen().then(() => {
-          icon.className = 'bi bi-fullscreen';
-        }).catch(err => {});
+        if (document.exitFullscreen) {
+          document.exitFullscreen().catch(err => {});
+        }
+      }
+    }
+
+    document.addEventListener('fullscreenchange', updateFullscreenUI);
+    function updateFullscreenUI() {
+      const icon = document.getElementById('fullscreenIcon');
+      const text = document.getElementById('fullscreenText');
+      const btn = document.getElementById('fullscreenBtn');
+      const isFs = !!document.fullscreenElement;
+
+      if (icon) {
+        icon.className = isFs ? 'bi bi-fullscreen-exit' : 'bi bi-arrows-fullscreen';
+      }
+      if (text) {
+        text.textContent = isFs ? 'Beenden' : 'Vollbild';
+      }
+      if (btn) {
+        if (isFs) {
+          btn.classList.remove('btn-outline-light');
+          btn.classList.add('btn-light', 'text-dark');
+          btn.setAttribute('title', 'Vollbild beenden (Esc oder F11)');
+        } else {
+          btn.classList.remove('btn-light', 'text-dark');
+          btn.classList.add('btn-outline-light');
+          btn.setAttribute('title', 'In den Vollbildmodus wechseln (F11)');
+        }
       }
     }
 
@@ -1987,6 +2166,8 @@
           e.preventDefault();
           completeCheckout();
         }
+      } else if (e.key === 'f' || e.key === 'F') {
+        toggleFullscreen();
       }
     });
 
