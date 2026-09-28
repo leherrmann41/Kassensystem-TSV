@@ -1,0 +1,2005 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Vereinskasse & Kassenhelfer</title>
+  
+  <!-- Bootstrap 5.3 CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <!-- Bootstrap Icons -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+
+  <style>
+    :root {
+      --primary-slate: #202938;
+      --primary-slate-dark: #111827;
+      --primary-slate-light: #374151;
+      --accent-emerald: #10b981;
+      --accent-emerald-dark: #059669;
+      --accent-amber: #f59e0b;
+      --accent-rose: #ef4444;
+      --surface-bg: #f3f4f6;
+      --card-bg: #ffffff;
+      --text-main: #1f2937;
+      --text-muted: #6b7280;
+    }
+
+    * {
+      touch-action: manipulation;
+      -webkit-tap-highlight-color: transparent;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      background-color: var(--surface-bg);
+      color: var(--text-main);
+      min-height: 100vh;
+      overflow-x: hidden;
+      user-select: none;
+      -webkit-user-select: none;
+    }
+
+    /* Header Styling */
+    .bg-nav-custom {
+      background-color: var(--primary-slate) !important;
+    }
+
+    .app-header {
+      background-color: var(--primary-slate);
+      color: #ffffff;
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    }
+
+    /* Card styling */
+    .card {
+      border: 0 !important;
+      border-radius: 12px;
+      background-color: var(--card-bg);
+    }
+
+    /* Layout heights for tablet landscape */
+    .main-container {
+      height: calc(100vh - 68px);
+      padding: 0.75rem;
+    }
+
+    @media (max-width: 991.98px) {
+      .main-container {
+        height: auto;
+        min-height: calc(100vh - 68px);
+      }
+    }
+
+    .h-content-full {
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Product Grid */
+    .category-pills {
+      display: flex;
+      gap: 0.5rem;
+      overflow-x: auto;
+      padding-bottom: 0.5rem;
+      scrollbar-width: thin;
+    }
+
+    .category-pills::-webkit-scrollbar {
+      height: 4px;
+    }
+    .category-pills::-webkit-scrollbar-thumb {
+      background: #cbd5e1;
+      border-radius: 4px;
+    }
+
+    .cat-btn {
+      white-space: nowrap;
+      font-size: 0.9rem;
+      font-weight: 600;
+      padding: 0.5rem 1rem;
+      border-radius: 50rem;
+      border: 1px solid #e5e7eb;
+      background: #ffffff;
+      color: var(--primary-slate);
+      transition: all 0.15s ease;
+      min-height: 42px;
+    }
+
+    .cat-btn.active {
+      background-color: var(--primary-slate);
+      color: #ffffff;
+      border-color: var(--primary-slate);
+      box-shadow: 0 2px 4px rgba(32, 41, 56, 0.2);
+    }
+
+    .product-grid-container {
+      flex: 1;
+      overflow-y: auto;
+      padding-right: 4px;
+      scrollbar-width: thin;
+    }
+
+    .product-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+      gap: 0.75rem;
+    }
+
+    @media (min-width: 1400px) {
+      .product-grid {
+        grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+      }
+    }
+
+    /* Product Tile Button */
+    .product-tile {
+      position: relative;
+      background: #ffffff;
+      border: 1px solid #e5e7eb;
+      border-radius: 12px;
+      padding: 0.75rem 0.6rem;
+      min-height: 86px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      text-align: left;
+      cursor: pointer;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+      transition: transform 0.08s ease, box-shadow 0.08s ease, border-color 0.1s ease, background-color 0.1s ease;
+    }
+
+    .product-tile:active {
+      transform: scale(0.96);
+      background-color: #f8fafc;
+      border-color: var(--primary-slate);
+    }
+
+    .product-tile .prod-title {
+      font-weight: 700;
+      font-size: 0.95rem;
+      line-height: 1.25;
+      color: var(--primary-slate);
+      margin-bottom: 0.35rem;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+
+    .product-tile .prod-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: auto;
+    }
+
+    .product-tile .prod-price {
+      font-weight: 800;
+      font-size: 1.05rem;
+      color: var(--accent-emerald-dark);
+      letter-spacing: -0.02em;
+    }
+
+    .product-tile .prod-badge-count {
+      position: absolute;
+      top: -6px;
+      right: -6px;
+      background: var(--primary-slate);
+      color: #ffffff;
+      font-size: 0.75rem;
+      font-weight: 800;
+      border-radius: 50rem;
+      min-width: 24px;
+      height: 24px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 2px solid #ffffff;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
+    }
+
+    .product-tile.category-drink {
+      border-left: 5px solid #3b82f6;
+    }
+    .product-tile.category-food {
+      border-left: 5px solid #f97316;
+    }
+    .product-tile.category-sweets {
+      border-left: 5px solid #ec4899;
+    }
+    .product-tile.category-deposit {
+      border-left: 5px solid #10b981;
+    }
+    .product-tile.category-other {
+      border-left: 5px solid #64748b;
+    }
+
+    /* Cart & Cashier Section */
+    .cart-container {
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+    }
+
+    .cart-table-wrapper {
+      flex: 1;
+      overflow-y: auto;
+      scrollbar-width: thin;
+      min-height: 140px;
+    }
+
+    .cart-table th {
+      position: sticky;
+      top: 0;
+      z-index: 5;
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      padding: 0.6rem 0.5rem;
+    }
+
+    .cart-table td {
+      vertical-align: middle;
+      padding: 0.45rem 0.5rem;
+    }
+
+    .qty-btn {
+      width: 38px;
+      height: 38px;
+      padding: 0;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+      font-size: 1.1rem;
+      border-radius: 8px;
+      touch-action: manipulation;
+    }
+
+    .qty-display {
+      font-weight: 800;
+      min-width: 28px;
+      text-align: center;
+      display: inline-block;
+      font-size: 1.05rem;
+    }
+
+    /* Summary & Checkout Section */
+    .checkout-panel {
+      background: #f8fafc;
+      border-top: 2px solid #e2e8f0;
+      border-radius: 0 0 12px 12px;
+      padding: 0.85rem;
+    }
+
+    .total-display-card {
+      background: #ffffff;
+      border: 1px solid #e2e8f0;
+      border-radius: 10px;
+      padding: 0.5rem 0.85rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+    }
+
+    .total-amount {
+      font-size: 2rem;
+      font-weight: 900;
+      color: var(--primary-slate);
+      line-height: 1;
+      letter-spacing: -0.03em;
+    }
+
+    /* Quick Cash Buttons */
+    .quick-cash-grid {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 0.35rem;
+      margin-top: 0.5rem;
+    }
+
+    .btn-quick-cash {
+      font-weight: 700;
+      font-size: 0.9rem;
+      padding: 0.45rem 0.15rem;
+      border-radius: 8px;
+      border: 1px solid #cbd5e1;
+      background: #ffffff;
+      color: var(--primary-slate);
+      min-height: 44px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.1s ease;
+    }
+
+    .btn-quick-cash:active {
+      background-color: var(--primary-slate);
+      color: #ffffff;
+      transform: scale(0.96);
+    }
+
+    .btn-quick-cash.active-match {
+      background-color: #e0e7ff;
+      border-color: #818cf8;
+      color: #3730a3;
+    }
+
+    /* Change / Rückgeld Display */
+    .change-box {
+      border-radius: 10px;
+      padding: 0.6rem 0.85rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-weight: 700;
+      transition: all 0.2s ease;
+      min-height: 52px;
+    }
+
+    .change-box.status-ok {
+      background-color: #ecfdf5;
+      border: 1.5px solid #10b981;
+      color: #065f46;
+    }
+
+    .change-box.status-missing {
+      background-color: #fef2f2;
+      border: 1.5px solid #ef4444;
+      color: #991b1b;
+    }
+
+    .change-box.status-neutral {
+      background-color: #f1f5f9;
+      border: 1.5px dashed #cbd5e1;
+      color: #64748b;
+    }
+
+    .change-amount {
+      font-size: 1.6rem;
+      font-weight: 900;
+      letter-spacing: -0.02em;
+    }
+
+    /* Pay Button */
+    .btn-pay {
+      background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+      border: none;
+      color: #ffffff;
+      font-weight: 800;
+      font-size: 1.15rem;
+      padding: 0.75rem 1rem;
+      border-radius: 10px;
+      box-shadow: 0 4px 6px -1px rgba(16, 185, 129, 0.3);
+      min-height: 56px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      transition: all 0.1s ease;
+    }
+
+    .btn-pay:disabled {
+      background: #9ca3af;
+      box-shadow: none;
+      opacity: 0.65;
+    }
+
+    .btn-pay:not(:disabled):active {
+      transform: scale(0.98);
+      box-shadow: 0 2px 4px rgba(16, 185, 129, 0.2);
+    }
+
+    /* Toast Notification Overlay */
+    .custom-toast {
+      position: fixed;
+      top: 80px;
+      right: 20px;
+      z-index: 1060;
+      background: var(--primary-slate-dark);
+      color: #ffffff;
+      padding: 0.85rem 1.25rem;
+      border-radius: 10px;
+      box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.2);
+      display: none;
+      align-items: center;
+      gap: 0.75rem;
+      animation: slideIn 0.25s ease-out;
+    }
+
+    @keyframes slideIn {
+      from { transform: translateY(-20px); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
+    }
+
+    /* Pulse effect on cart update */
+    .pulse-effect {
+      animation: pulseHighlight 0.3s ease;
+    }
+
+    @keyframes pulseHighlight {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.04); background-color: #ecfdf5; }
+      100% { transform: scale(1); }
+    }
+
+    /* Modal adjustments */
+    .modal-content {
+      border-radius: 16px;
+      border: 0;
+      box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.2);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Toast Notification -->
+  <div id="toastNotification" class="custom-toast">
+    <i class="bi bi-check-circle-fill text-success fs-4"></i>
+    <div>
+      <div class="fw-bold" id="toastTitle">Zahlung gebucht!</div>
+      <div class="small text-light" id="toastMessage">Rückgeld: 0,00 €</div>
+    </div>
+  </div>
+
+  <!-- Header -->
+  <header class="app-header px-3 py-2">
+    <div class="d-flex justify-content-between align-items-center">
+      <div class="d-flex align-items-center gap-2">
+        <div class="bg-white text-dark rounded-3 p-1 px-2 fw-bold d-flex align-items-center gap-1 shadow-sm">
+          <i class="bi bi-shop text-primary"></i>
+          <span id="headerAppName">Besenfest TSV Billigheim</span>
+        </div>
+        <span class="text-white-50 d-none d-md-inline">|</span>
+        <span class="badge bg-dark border border-secondary text-light d-none d-md-inline" id="headerSubtitle">Festbetrieb 2025</span>
+      </div>
+
+      <div class="d-flex align-items-center gap-2">
+        <!-- Quick stats modal trigger -->
+        <button class="btn btn-outline-light btn-sm d-flex align-items-center gap-1 px-2 py-1" onclick="openStatsModal()" title="Tagesumsatz & Verkaufsstatistik">
+          <i class="bi bi-bar-chart-line-fill text-warning"></i>
+          <span class="d-none d-sm-inline">Umsatz: </span>
+          <span class="fw-bold text-warning" id="headerDailyTurnover">0,00 €</span>
+        </button>
+
+        <!-- Clear / New customer -->
+        <button class="btn btn-outline-danger btn-sm d-flex align-items-center gap-1 px-2 py-1" onclick="resetCart(true)" title="Warenkorb leeren">
+          <i class="bi bi-arrow-counterclockwise"></i>
+          <span class="d-none d-sm-inline">Warenkorb leeren</span>
+        </button>
+
+        <!-- Settings Modal trigger -->
+        <button class="btn btn-light btn-sm d-flex align-items-center gap-1 px-2 py-1 fw-semibold" onclick="openSettingsModal()" title="Einstellungen & Sortiment">
+          <i class="bi bi-gear-fill text-secondary"></i>
+          <span class="d-none d-sm-inline">Einstellungen</span>
+        </button>
+
+        <!-- Fullscreen toggle -->
+        <button class="btn btn-dark btn-sm px-2 py-1" onclick="toggleFullscreen()" title="Vollbild umschalten">
+          <i class="bi bi-fullscreen" id="fullscreenIcon"></i>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main 2-Column Layout -->
+  <div class="container-fluid main-container">
+    <div class="row g-2 h-100">
+
+      <!-- LEFT COLUMN: Product Catalog (ca. 62% width on lg+) -->
+      <div class="col-12 col-lg-7 col-xl-7 h-100">
+        <div class="card shadow-sm border-0 h-content-full p-2 p-md-3">
+          
+          <!-- Category Filter Bar (ohne Suchfenster) -->
+          <div class="mb-2">
+            <div class="category-pills" id="categoryPillsContainer">
+              <button class="cat-btn active" onclick="setCategoryFilter('all')">
+                <i class="bi bi-grid-fill me-1"></i> Alle Artikel
+              </button>
+              <!-- Populated dynamically via JavaScript -->
+            </div>
+          </div>
+
+          <!-- Product Grid List -->
+          <div class="product-grid-container">
+            <div class="product-grid" id="productGrid">
+              <!-- Rendered dynamically -->
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- RIGHT COLUMN: Cart & Cash Register (ca. 38% width on lg+) -->
+      <div class="col-12 col-lg-5 col-xl-5 h-100">
+        <div class="card shadow-sm border-0 h-content-full overflow-hidden">
+          
+          <div class="cart-container">
+            
+            <!-- Cart Header & Items List -->
+            <div class="cart-table-wrapper">
+              <table class="table table-sm table-hover align-middle mb-0 cart-table">
+                <thead class="bg-nav-custom text-white">
+                  <tr>
+                    <th style="width: 42%;">Artikel</th>
+                    <th style="width: 28%; text-align: center;">Menge</th>
+                    <th style="width: 22%; text-align: right;">Gesamt</th>
+                    <th style="width: 8%; text-align: center;"></th>
+                  </tr>
+                </thead>
+                <tbody id="cartTableBody">
+                  <!-- Rendered dynamically -->
+                </tbody>
+              </table>
+
+              <!-- Empty State -->
+              <div id="cartEmptyState" class="text-center text-muted p-4 my-auto">
+                <i class="bi bi-cart3 display-4 d-block mb-2 text-secondary opacity-50"></i>
+                <div class="fw-semibold">Der Warenkorb ist leer</div>
+                <small class="text-secondary">Tippe links auf Artikel, um sie hinzuzufügen</small>
+              </div>
+            </div>
+
+            <!-- Checkout / Cashier Panel -->
+            <div class="checkout-panel">
+              
+              <!-- Dynamic Pfand Quick Bar (Active when drinks or deposit items are in cart) -->
+              <div id="pfandQuickBar" class="p-2 mb-2 rounded-3 border bg-white shadow-sm align-items-center justify-content-between" style="border-left: 4px solid #10b981 !important; display: none;">
+                <div class="d-flex align-items-center gap-2">
+                  <div class="bg-success text-white rounded-circle d-flex align-items-center justify-content-center flex-shrink-0" style="width: 32px; height: 32px; font-size: 0.95rem;">
+                    <i class="bi bi-arrow-repeat"></i>
+                  </div>
+                  <div style="line-height: 1.2;">
+                    <div class="fw-bold text-dark" style="font-size: 0.88rem;">Pfand Schnellwahl (2,00 €)</div>
+                    <small class="text-muted" style="font-size: 0.75rem;" id="pfandQuickInfo">0 Getränke • 0x Pfand</small>
+                  </div>
+                </div>
+                <div class="d-flex align-items-center gap-1">
+                  <button class="btn btn-outline-success btn-sm fw-bold px-2 py-1" onclick="syncPfandWithDrinks()" title="Pfand passend zur Anzahl der Getränke setzen">
+                    <i class="bi bi-lightning-charge-fill"></i> Passend (<span id="pfandDrinkCountBadge">0</span>)
+                  </button>
+                  <button class="btn btn-outline-secondary qty-btn" style="width: 34px; height: 34px; font-size: 1rem;" onclick="quickAdjustPfand(-1)" title="Pfand verringern / Rückgabe erfassen">
+                    <i class="bi bi-dash-lg"></i>
+                  </button>
+                  <span class="qty-display" style="min-width: 24px; font-size: 1rem;" id="pfandQuickCount">0</span>
+                  <button class="btn btn-outline-success qty-btn" style="width: 34px; height: 34px; font-size: 1rem;" onclick="quickAdjustPfand(1)" title="Pfand hinzufügen">
+                    <i class="bi bi-plus-lg"></i>
+                  </button>
+                </div>
+              </div>
+
+              <!-- Total Display -->
+              <div class="total-display-card mb-2">
+                <span class="text-muted fw-bold text-uppercase" style="font-size: 0.85rem;">Gesamtsumme</span>
+                <span class="total-amount" id="totalDisplay">0,00 €</span>
+              </div>
+
+              <!-- Given Amount Input & Quick Buttons -->
+              <div class="row g-2 align-items-center mb-2">
+                <div class="col-5">
+                  <label class="form-label text-muted small fw-bold mb-1 d-flex justify-content-between">
+                    <span>Gegeben:</span>
+                    <a href="javascript:void(0)" class="text-decoration-none text-danger" onclick="clearGiven()">Löschen</a>
+                  </label>
+                  <div class="input-group">
+                    <input type="number" step="0.01" min="0" id="givenInput" class="form-control form-control-lg fw-bold text-end" placeholder="0,00" oninput="handleGivenChange(this.value)">
+                    <span class="input-group-text fw-bold">€</span>
+                  </div>
+                </div>
+
+                <!-- Quick Buttons Column -->
+                <div class="col-7">
+                  <label class="form-label text-muted small fw-bold mb-1">Schnellwahl Bargeld:</label>
+                  <div class="d-flex gap-1 flex-wrap">
+                    <button class="btn btn-outline-secondary btn-sm flex-fill fw-bold py-2" onclick="setGivenExact()">Passend</button>
+                    <button class="btn btn-outline-secondary btn-sm flex-fill fw-bold py-2" onclick="setGivenPreset(5)">5 €</button>
+                    <button class="btn btn-outline-secondary btn-sm flex-fill fw-bold py-2" onclick="setGivenPreset(10)">10 €</button>
+                    <button class="btn btn-outline-secondary btn-sm flex-fill fw-bold py-2" onclick="setGivenPreset(20)">20 €</button>
+                    <button class="btn btn-outline-secondary btn-sm flex-fill fw-bold py-2" onclick="setGivenPreset(50)">50 €</button>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Change / Rückgeld Display -->
+              <div id="changeBox" class="change-box status-neutral mb-2">
+                <div>
+                  <div class="small text-uppercase" id="changeLabel">Rückgeld</div>
+                  <small id="changeSubtext" class="opacity-75">Gegebenen Betrag eingeben</small>
+                </div>
+                <div class="change-amount" id="changeDisplay">0,00 €</div>
+              </div>
+
+              <!-- Pay / Next Customer Button -->
+              <button id="payButton" class="btn btn-pay w-100" disabled onclick="completeCheckout()">
+                <i class="bi bi-check2-circle fs-4"></i>
+                <span>Bezahlt / Nächster Kunde</span>
+              </button>
+
+            </div>
+
+          </div>
+
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- SETTINGS / ARTICLE MANAGEMENT MODAL -->
+  <div class="modal fade" id="settingsModal" tabindex="-1" aria-labelledby="settingsModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable">
+      <div class="modal-content">
+        
+        <div class="modal-header bg-nav-custom text-white">
+          <h5 class="modal-title fw-bold" id="settingsModalLabel">
+            <i class="bi bi-gear-fill me-2"></i> Einstellungen
+          </h5>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Schließen"></button>
+        </div>
+
+        <div class="modal-body p-0">
+          <!-- Prominente Editierung der Festivität (Überschrift & Untertitel) -->
+          <div class="p-3 bg-light border-bottom">
+            <div class="row g-2 align-items-center">
+              <div class="col-12 col-md-7">
+                <label class="form-label small fw-bold text-uppercase text-secondary mb-1">
+                  <i class="bi bi-shop me-1 text-primary"></i> Festivität / Veranstaltungsname (Überschrift)
+                </label>
+                <input type="text" id="configAppNameInput" class="form-control form-control-lg fw-bold" placeholder="z. B. Besenfest TSV Billigheim" oninput="saveAppConfig(false)">
+              </div>
+              <div class="col-12 col-md-5">
+                <label class="form-label small fw-bold text-uppercase text-secondary mb-1">
+                  <i class="bi bi-tag me-1 text-secondary"></i> Untertitel / Station
+                </label>
+                <input type="text" id="configSubtitleInput" class="form-control form-control-lg" placeholder="z. B. Festbetrieb 2025" oninput="saveAppConfig(false)">
+              </div>
+            </div>
+          </div>
+
+          <!-- Nav Tabs -->
+          <ul class="nav nav-tabs nav-fill bg-white px-3 pt-2" id="settingsTabs" role="tablist">
+            <li class="nav-item" role="presentation">
+              <button class="nav-link active fw-bold text-dark" id="articles-tab" data-bs-toggle="tab" data-bs-target="#articlesTabPane" type="button" role="tab">
+                <i class="bi bi-grid-3x3-gap-fill me-1 text-primary"></i> Artikelverwaltung
+              </button>
+            </li>
+            <li class="nav-item" role="presentation">
+              <button class="nav-link fw-bold text-dark" id="backup-tab" data-bs-toggle="tab" data-bs-target="#backupTabPane" type="button" role="tab">
+                <i class="bi bi-arrow-down-up me-1 text-success"></i> Backup & Daten-Import
+              </button>
+            </li>
+            <li class="nav-item" role="presentation">
+              <button class="nav-link fw-bold text-dark" id="config-tab" data-bs-toggle="tab" data-bs-target="#configTabPane" type="button" role="tab">
+                <i class="bi bi-sliders me-1 text-warning"></i> Kassen-Optionen
+              </button>
+            </li>
+          </ul>
+
+          <div class="tab-content p-3 p-md-4" id="settingsTabContent">
+            
+            <!-- TAB 1: ARTICLE MANAGEMENT -->
+            <div class="tab-pane fade show active" id="articlesTabPane" role="tabpanel">
+              <div class="row g-4">
+                
+                <!-- Left: Form to Add/Edit Article -->
+                <div class="col-12 col-md-4">
+                  <div class="card bg-light border p-3">
+                    <h6 class="fw-bold mb-3 text-primary" id="articleFormTitle">
+                      <i class="bi bi-plus-circle-fill me-1"></i> Artikel hinzufügen
+                    </h6>
+                    
+                    <form id="articleForm" onsubmit="handleSaveArticle(event)">
+                      <input type="hidden" id="editArticleId">
+                      
+                      <div class="mb-2">
+                        <label class="form-label small fw-bold">Artikelname *</label>
+                        <input type="text" id="articleNameInput" class="form-control" placeholder="z. B. Bratwurst im Brötchen" required>
+                      </div>
+
+                      <div class="mb-2">
+                        <label class="form-label small fw-bold">Preis in € *</label>
+                        <input type="text" id="articlePriceInput" class="form-control" placeholder="3,50" required>
+                        <div class="form-text">Komma oder Punkt als Dezimaltrennzeichen</div>
+                      </div>
+
+                      <div class="mb-2">
+                        <label class="form-label small fw-bold">Kategorie</label>
+                        <select id="articleCategoryInput" class="form-select">
+                          <option value="food">Essen & Vesper</option>
+                          <option value="drink">Getränke</option>
+                          <option value="sweets">Kaffee & Kuchen</option>
+                          <option value="deposit">Pfand</option>
+                          <option value="other">Sonstiges</option>
+                        </select>
+                      </div>
+
+                      <div class="d-flex gap-2 mt-3">
+                        <button type="submit" class="btn btn-primary flex-grow-1 fw-bold" id="articleSaveBtn">
+                          <i class="bi bi-check-lg"></i> Speichern
+                        </button>
+                        <button type="button" class="btn btn-outline-secondary" id="articleCancelEditBtn" style="display:none;" onclick="cancelEditArticle()">
+                          Abbrechen
+                        </button>
+                      </div>
+                    </form>
+                  </div>
+                </div>
+
+                <!-- Right: Article List Table -->
+                <div class="col-12 col-md-8">
+                  <div class="d-flex justify-content-between align-items-center mb-2">
+                    <h6 class="fw-bold mb-0">Aktuelles Sortiment (<span id="articleCountBadge">0</span> Artikel)</h6>
+                    <button class="btn btn-outline-danger btn-sm" onclick="confirmResetDefaults()">
+                      <i class="bi bi-arrow-counterclockwise"></i> Auf Standard zurücksetzen
+                    </button>
+                  </div>
+
+                  <div class="table-responsive" style="max-height: 400px;">
+                    <table class="table table-bordered table-hover align-middle table-sm">
+                      <thead class="bg-nav-custom text-white">
+                        <tr>
+                          <th>Name</th>
+                          <th>Kategorie</th>
+                          <th style="width: 100px; text-align: right;">Preis</th>
+                          <th style="width: 110px; text-align: center;">Aktionen</th>
+                        </tr>
+                      </thead>
+                      <tbody id="articleManagerTableBody">
+                        <!-- Populated dynamically -->
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+
+              </div>
+            </div>
+
+            <!-- TAB 2: BACKUP & DATA IMPORT/EXPORT -->
+            <div class="tab-pane fade" id="backupTabPane" role="tabpanel">
+              <div class="row g-4">
+                
+                <!-- Export Card -->
+                <div class="col-12 col-md-6">
+                  <div class="card h-100 border p-3">
+                    <h6 class="fw-bold text-success mb-2">
+                      <i class="bi bi-cloud-arrow-down-fill me-1"></i> Speisekarte exportieren
+                    </h6>
+                    <p class="small text-muted mb-3">
+                      Lade das aktuelle Sortiment als JSON-Datei herunter oder kopiere den Inhalt, um die Speisekarte schnell auf andere Tablets zu übertragen.
+                    </p>
+                    <div class="d-flex gap-2 mt-auto">
+                      <button class="btn btn-success fw-bold flex-grow-1" onclick="exportArticlesJSON()">
+                        <i class="bi bi-download me-1"></i> JSON Datei herunterladen
+                      </button>
+                      <button class="btn btn-outline-secondary" onclick="copyArticlesJSONToClipboard()" title="In Zwischenablage kopieren">
+                        <i class="bi bi-clipboard"></i>
+                      </button>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Import Card -->
+                <div class="col-12 col-md-6">
+                  <div class="card h-100 border p-3">
+                    <h6 class="fw-bold text-primary mb-2">
+                      <i class="bi bi-cloud-arrow-up-fill me-1"></i> Speisekarte importieren
+                    </h6>
+                    <p class="small text-muted mb-2">
+                      Wähle eine exportierte JSON-Datei aus oder füge den JSON-Code direkt ein:
+                    </p>
+                    
+                    <div class="mb-2">
+                      <input type="file" id="jsonFileInput" class="form-control form-control-sm" accept=".json" onchange="handleJSONFileUpload(event)">
+                    </div>
+
+                    <div class="mb-2">
+                      <textarea id="jsonPasteArea" class="form-control font-monospace small" rows="3" placeholder='JSON hier einfügen: [{"name": "Bratwurst", "price": 3.5, ...}]'></textarea>
+                    </div>
+
+                    <button class="btn btn-primary fw-bold w-100 mt-auto" onclick="importArticlesFromText()">
+                      <i class="bi bi-upload me-1"></i> JSON aus Textfeld importieren
+                    </button>
+                  </div>
+                </div>
+
+              </div>
+            </div>
+
+            <!-- TAB 3: APP SETTINGS -->
+            <div class="tab-pane fade" id="configTabPane" role="tabpanel">
+              <div class="row g-3">
+                <div class="col-12 col-md-6">
+                  <div class="form-check form-switch p-3 ps-5 border rounded bg-light">
+                    <input class="form-check-input" type="checkbox" id="configSoundToggle" checked onchange="saveAppConfig(true)">
+                    <label class="form-check-label fw-bold" for="configSoundToggle">
+                      Akustisches Signal bei Zahlung (Kassenton)
+                    </label>
+                    <div class="small text-muted">Spielt einen kurzen Ton beim Klick auf "Bezahlt".</div>
+                  </div>
+                </div>
+
+                <div class="col-12 col-md-6">
+                  <div class="form-check form-switch p-3 ps-5 border rounded bg-light">
+                    <input class="form-check-input" type="checkbox" id="configHapticToggle" checked onchange="saveAppConfig(true)">
+                    <label class="form-check-label fw-bold" for="configHapticToggle">
+                      Haptisches Feedback (Vibration)
+                    </label>
+                    <div class="small text-muted">Unterstützte Touch-Tablets vibrieren dezent beim Tastendruck.</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <div class="modal-footer bg-light">
+          <button type="button" class="btn btn-secondary px-4 fw-bold" data-bs-dismiss="modal">Fertig</button>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- STATS / REVENUE REPORT MODAL -->
+  <div class="modal fade" id="statsModal" tabindex="-1" aria-labelledby="statsModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header bg-nav-custom text-white">
+          <h5 class="modal-title fw-bold" id="statsModalLabel">
+            <i class="bi bi-bar-chart-fill text-warning me-2"></i> Kassensturz & Verkaufsstatistik
+          </h5>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Schließen"></button>
+        </div>
+        <div class="modal-body p-3 p-md-4">
+          
+          <!-- Summary Cards -->
+          <div class="row g-3 mb-4">
+            <div class="col-6 col-md-4">
+              <div class="card bg-light border p-3 text-center">
+                <div class="text-muted small fw-bold text-uppercase">Gesamtumsatz</div>
+                <div class="fs-3 fw-bold text-success" id="statsTotalRevenue">0,00 €</div>
+              </div>
+            </div>
+            <div class="col-6 col-md-4">
+              <div class="card bg-light border p-3 text-center">
+                <div class="text-muted small fw-bold text-uppercase">Bestellungen</div>
+                <div class="fs-3 fw-bold text-primary" id="statsTotalOrders">0</div>
+              </div>
+            </div>
+            <div class="col-12 col-md-4">
+              <div class="card bg-light border p-3 text-center">
+                <div class="text-muted small fw-bold text-uppercase">Verkaufte Artikel</div>
+                <div class="fs-3 fw-bold text-dark" id="statsTotalItems">0 Stk.</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Item Breakdown Table -->
+          <h6 class="fw-bold mb-2">Verkaufte Artikel im Detail:</h6>
+          <div class="table-responsive mb-3" style="max-height: 250px;">
+            <table class="table table-sm table-striped table-hover align-middle">
+              <thead class="bg-nav-custom text-white">
+                <tr>
+                  <th>Artikel</th>
+                  <th style="width: 100px; text-align: center;">Anzahl</th>
+                  <th style="width: 120px; text-align: right;">Einzelpreis</th>
+                  <th style="width: 120px; text-align: right;">Gesamt</th>
+                </tr>
+              </thead>
+              <tbody id="statsTableBody">
+                <!-- Populated dynamically -->
+              </tbody>
+            </table>
+          </div>
+
+          <!-- Stats Actions -->
+          <div class="d-flex justify-content-between align-items-center pt-2 border-top">
+            <button class="btn btn-outline-danger btn-sm" onclick="confirmResetStats()">
+              <i class="bi bi-trash3"></i> Statistik zurücksetzen
+            </button>
+            <button class="btn btn-outline-primary btn-sm" onclick="exportStatsCSV()">
+              <i class="bi bi-file-earmark-spreadsheet"></i> CSV Export für Kassenwart
+            </button>
+          </div>
+
+        </div>
+        <div class="modal-footer bg-light">
+          <button type="button" class="btn btn-secondary fw-bold" data-bs-dismiss="modal">Schließen</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CUSTOM IN-APP CONFIRMATION MODAL (Kein Beenden des Vollbildmodus!) -->
+  <div class="modal fade" id="confirmModal" tabindex="-1" aria-labelledby="confirmModalTitle" aria-hidden="true" style="z-index: 1075;">
+    <div class="modal-dialog modal-dialog-centered" style="max-width: 440px;">
+      <div class="modal-content shadow border-0">
+        <div class="modal-header bg-nav-custom text-white py-3">
+          <h5 class="modal-title fw-bold" id="confirmModalTitle">Bestätigung</h5>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Abbrechen"></button>
+        </div>
+        <div class="modal-body p-4 text-center">
+          <i class="bi bi-question-circle text-warning display-4 d-block mb-3"></i>
+          <div class="fs-6 fw-semibold text-dark mb-1" id="confirmModalBody">Möchtest du diese Aktion wirklich ausführen?</div>
+        </div>
+        <div class="modal-footer bg-light justify-content-center gap-2 py-3">
+          <button type="button" class="btn btn-outline-secondary px-4 fw-bold" data-bs-dismiss="modal">Abbrechen</button>
+          <button type="button" class="btn btn-danger px-4 fw-bold" id="confirmModalConfirmBtn">Bestätigen</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bootstrap 5.3 JS Bundle -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+  <!-- Application Logic -->
+  <script>
+    /**
+     * KASSENHELFER - VEREINSFEST
+     * Autarke Single-Page Webanwendung mit LocalStorage Persistenz
+     */
+
+    // --- DEFAULT DATA & CONFIG ---
+    const CURRENT_MENU_VERSION = "tsv_billigheim_2025_v1";
+
+    const DEFAULT_ARTICLES = [
+      // Getränke
+      { id: "art_1", name: "Cola, Fanta, Spezi, Schorle 0,4l", price: 3.00, category: "drink" },
+      { id: "art_2", name: "Sprudel 0,7l", price: 2.50, category: "drink" },
+      { id: "art_3", name: "Bier, Radler 0,4l", price: 3.50, category: "drink" },
+      { id: "art_4", name: "Bier alkoholfrei 0,3l", price: 2.80, category: "drink" },
+      { id: "art_5", name: "Weizen, Weizen alkoholfrei 0,5l", price: 3.80, category: "drink" },
+      { id: "art_6", name: "Schorle 0,25l", price: 3.00, category: "drink" },
+      { id: "art_7", name: "Wein 0,25l", price: 3.50, category: "drink" },
+      { id: "art_8", name: "Schnaps, Jägermeister", price: 2.00, category: "drink" },
+
+      // Kaffee & Kuchen
+      { id: "art_9", name: "Kaffee Pott", price: 2.00, category: "sweets" },
+      { id: "art_10", name: "Muffins", price: 1.00, category: "sweets" },
+      { id: "art_11", name: "Kuchen", price: 2.00, category: "sweets" },
+
+      // Essen & Besengerichte
+      { id: "art_12", name: "Schlachtplatte m. Sauerkraut & Besenbrot", price: 10.00, category: "food" },
+      { id: "art_13", name: "Hausmacherteller m. Besenbrot", price: 6.50, category: "food" },
+      { id: "art_14", name: "1P grobe Bratwürste m. Besenbrot", price: 6.00, category: "food" },
+      { id: "art_15", name: "Besenbrot mit Käse & Zwiebel", price: 5.00, category: "food" },
+      { id: "art_16", name: "Besenbrot mit Kochkäse", price: 4.00, category: "food" },
+      { id: "art_17", name: "Brätbrot mit Zwiebel", price: 5.00, category: "food" },
+      { id: "art_18", name: "Schupfnudeln mit Sauerkraut", price: 5.00, category: "food" },
+      { id: "art_19", name: "Schupfnudeln mit Apfelmus", price: 5.00, category: "food" },
+      { id: "art_20", name: "Vegane Maultaschen", price: 3.80, category: "food" },
+      { id: "art_21", name: "Schupfnudeln (Portion)", price: 2.50, category: "food" },
+      { id: "art_22", name: "Sauerkraut (Portion)", price: 2.50, category: "food" },
+      { id: "art_23", name: "Kürbiscremesuppe m. Brot", price: 4.00, category: "food" },
+      { id: "art_24", name: "Metzelpfeffer", price: 1.50, category: "food" },
+      { id: "art_25", name: "Metzelpfeffer mit Brot", price: 2.00, category: "food" },
+      { id: "art_26", name: "Brot (Portion)", price: 0.50, category: "food" },
+
+      // Pfand
+      { id: "art_27", name: "Pfand (+)", price: 2.00, category: "deposit" },
+      { id: "art_28", name: "Pfand-Rückgabe (-)", price: -2.00, category: "deposit" }
+    ];
+
+    const CATEGORY_NAMES = {
+      all: "Alle Artikel",
+      food: "Essen & Vesper",
+      drink: "Getränke",
+      sweets: "Kaffee & Kuchen",
+      deposit: "Pfand",
+      other: "Sonstiges"
+    };
+
+    // --- STATE ---
+    let articles = [];
+    let cart = {}; // key: articleId, value: quantity
+    let givenAmount = 0;
+    let currentCategoryFilter = 'all';
+    let currentSearchTerm = '';
+    let appConfig = {
+      appName: "Besenfest TSV Billigheim",
+      subtitle: "Festbetrieb 2025",
+      soundEnabled: true,
+      hapticEnabled: true
+    };
+    let salesHistory = [];
+
+    // --- WEB AUDIO API SYNTHETIC SOUNDS (100% Offline) ---
+    let audioCtx = null;
+    function playBeep(type = 'click') {
+      if (!appConfig.soundEnabled) return;
+      try {
+        if (!audioCtx) {
+          audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        }
+        if (audioCtx.state === 'suspended') {
+          audioCtx.resume();
+        }
+
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+
+        const now = audioCtx.currentTime;
+        if (type === 'click') {
+          osc.type = 'sine';
+          osc.frequency.setValueAtTime(600, now);
+          gain.gain.setValueAtTime(0.08, now);
+          gain.gain.exponentialRampToValueAtTime(0.001, now + 0.05);
+          osc.start(now);
+          osc.stop(now + 0.05);
+        } else if (type === 'success') {
+          // Cash register chime: two-tone chord
+          osc.type = 'triangle';
+          osc.frequency.setValueAtTime(523.25, now); // C5
+          osc.frequency.setValueAtTime(659.25, now + 0.08); // E5
+          osc.frequency.setValueAtTime(783.99, now + 0.16); // G5
+          osc.frequency.setValueAtTime(1046.50, now + 0.24); // C6
+          gain.gain.setValueAtTime(0.15, now);
+          gain.gain.exponentialRampToValueAtTime(0.001, now + 0.45);
+          osc.start(now);
+          osc.stop(now + 0.45);
+        } else if (type === 'warn') {
+          osc.type = 'sawtooth';
+          osc.frequency.setValueAtTime(220, now);
+          gain.gain.setValueAtTime(0.1, now);
+          gain.gain.exponentialRampToValueAtTime(0.001, now + 0.2);
+          osc.start(now);
+          osc.stop(now + 0.2);
+        }
+      } catch (e) {
+        // Audio playback failed silently (e.g. strict browser policy)
+      }
+    }
+
+    function triggerHaptic() {
+      if (appConfig.hapticEnabled && navigator.vibrate) {
+        try {
+          navigator.vibrate(25);
+        } catch (e) {}
+      }
+    }
+
+    // --- INITIALIZATION ---
+    document.addEventListener('DOMContentLoaded', () => {
+      loadStorageData();
+      renderCategoryFilters();
+      renderProductGrid();
+      renderCart();
+      updateHeader();
+    });
+
+    // --- STORAGE HANDLING ---
+    function loadStorageData() {
+      const savedVersion = localStorage.getItem('kasse_menu_version');
+      const savedArticles = localStorage.getItem('kasse_articles');
+
+      if (savedArticles && savedVersion === CURRENT_MENU_VERSION) {
+        try {
+          articles = JSON.parse(savedArticles);
+        } catch (e) {
+          articles = JSON.parse(JSON.stringify(DEFAULT_ARTICLES));
+        }
+      } else {
+        // Load fresh Besenfest menu
+        articles = JSON.parse(JSON.stringify(DEFAULT_ARTICLES));
+        localStorage.setItem('kasse_menu_version', CURRENT_MENU_VERSION);
+        saveArticlesToStorage();
+      }
+
+      // App Config
+      const savedConfig = localStorage.getItem('kasse_config');
+      if (savedConfig && savedVersion === CURRENT_MENU_VERSION) {
+        try {
+          appConfig = { ...appConfig, ...JSON.parse(savedConfig) };
+        } catch (e) {}
+      } else {
+        localStorage.setItem('kasse_config', JSON.stringify(appConfig));
+      }
+
+      // Sales History
+      const savedSales = localStorage.getItem('kasse_sales_history');
+      if (savedSales) {
+        try {
+          salesHistory = JSON.parse(savedSales);
+        } catch (e) {
+          salesHistory = [];
+        }
+      }
+
+      updateDailyTurnoverDisplay();
+    }
+
+    function saveArticlesToStorage() {
+      localStorage.setItem('kasse_articles', JSON.stringify(articles));
+      renderProductGrid();
+      renderCart();
+      renderCategoryFilters();
+    }
+
+    function saveSalesToStorage() {
+      localStorage.setItem('kasse_sales_history', JSON.stringify(salesHistory));
+      updateDailyTurnoverDisplay();
+    }
+
+    function saveAppConfig(showToastNotification = false) {
+      const nameInput = document.getElementById('configAppNameInput').value.trim();
+      const subInput = document.getElementById('configSubtitleInput').value.trim();
+      const soundInput = document.getElementById('configSoundToggle').checked;
+      const hapticInput = document.getElementById('configHapticToggle').checked;
+
+      appConfig.appName = nameInput || "Besenfest TSV Billigheim";
+      appConfig.subtitle = subInput || "Festbetrieb 2025";
+      appConfig.soundEnabled = soundInput;
+      appConfig.hapticEnabled = hapticInput;
+
+      localStorage.setItem('kasse_config', JSON.stringify(appConfig));
+      updateHeader();
+      if (showToastNotification) {
+        showToast("Einstellungen gespeichert", "");
+      }
+    }
+
+    function updateHeader() {
+      document.getElementById('headerAppName').textContent = appConfig.appName;
+      document.getElementById('headerSubtitle').textContent = appConfig.subtitle;
+      document.getElementById('configAppNameInput').value = appConfig.appName;
+      document.getElementById('configSubtitleInput').value = appConfig.subtitle;
+      document.getElementById('configSoundToggle').checked = appConfig.soundEnabled;
+      document.getElementById('configHapticToggle').checked = appConfig.hapticEnabled;
+    }
+
+    function updateDailyTurnoverDisplay() {
+      const total = salesHistory.reduce((sum, order) => sum + (order.total || 0), 0);
+      document.getElementById('headerDailyTurnover').textContent = formatCurrency(total);
+    }
+
+    // --- CURRENCY FORMATTER ---
+    function formatCurrency(amount) {
+      const num = Number(amount) || 0;
+      return num.toLocaleString('de-DE', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + ' €';
+    }
+
+    function parseGermanPrice(inputStr) {
+      if (typeof inputStr === 'number') return inputStr;
+      if (!inputStr) return 0;
+      const clean = inputStr.replace(/[^0-9,.-]/g, '').replace(',', '.');
+      return parseFloat(clean) || 0;
+    }
+
+    // --- CATEGORY PILLS FILTER ---
+    function renderCategoryFilters() {
+      const container = document.getElementById('categoryPillsContainer');
+      const categories = ['all'];
+      
+      articles.forEach(art => {
+        const cat = art.category || 'other';
+        if (!categories.includes(cat)) {
+          categories.push(cat);
+        }
+      });
+
+      let html = '';
+      categories.forEach(cat => {
+        const isActive = currentCategoryFilter === cat ? 'active' : '';
+        const label = CATEGORY_NAMES[cat] || cat;
+        let icon = 'bi-tag';
+        if (cat === 'all') icon = 'bi-grid-fill';
+        else if (cat === 'food') icon = 'bi-fire';
+        else if (cat === 'drink') icon = 'bi-cup-straw';
+        else if (cat === 'sweets') icon = 'bi-cake2';
+        else if (cat === 'deposit') icon = 'bi-arrow-repeat';
+
+        html += `
+          <button class="cat-btn ${isActive}" onclick="setCategoryFilter('${cat}')">
+            <i class="bi ${icon} me-1"></i> ${label}
+          </button>
+        `;
+      });
+
+      container.innerHTML = html;
+    }
+
+    function setCategoryFilter(category) {
+      playBeep('click');
+      triggerHaptic();
+      currentCategoryFilter = category;
+      renderCategoryFilters();
+      renderProductGrid();
+    }
+
+    // --- PRODUCT GRID RENDERING ---
+    function renderProductGrid() {
+      const grid = document.getElementById('productGrid');
+      let filtered = articles;
+
+      if (currentCategoryFilter !== 'all') {
+        filtered = filtered.filter(a => (a.category || 'other') === currentCategoryFilter);
+      }
+
+      if (filtered.length === 0) {
+        grid.innerHTML = `
+          <div class="col-12 text-center text-muted p-5 w-100" style="grid-column: 1 / -1;">
+            <i class="bi bi-grid display-6 d-block mb-2 text-secondary opacity-50"></i>
+            Keine Artikel in dieser Kategorie vorhanden.
+          </div>
+        `;
+        return;
+      }
+
+      let html = '';
+      filtered.forEach(art => {
+        const countInCart = cart[art.id] || 0;
+        const badgeHtml = countInCart > 0 
+          ? `<span class="prod-badge-count">${countInCart}x</span>` 
+          : '';
+
+        const catClass = `category-${art.category || 'other'}`;
+
+        html += `
+          <div class="product-tile ${catClass}" onclick="addToCart('${art.id}')">
+            ${badgeHtml}
+            <div class="prod-title">${escapeHtml(art.name)}</div>
+            <div class="prod-footer">
+              <span class="prod-price">${formatCurrency(art.price)}</span>
+              <span class="btn btn-sm btn-light p-1 px-2 border rounded-circle text-primary">
+                <i class="bi bi-plus-lg"></i>
+              </span>
+            </div>
+          </div>
+        `;
+      });
+
+      grid.innerHTML = html;
+    }
+
+    // --- PFAND & GETRÄNKE HELPER ---
+    function getDrinkCountInCart() {
+      let count = 0;
+      for (const [artId, qty] of Object.entries(cart)) {
+        const art = articles.find(a => a.id === artId);
+        if (art && art.category === 'drink') {
+          count += qty;
+        }
+      }
+      return count;
+    }
+
+    function getDepositArticles() {
+      let plusArt = articles.find(a => a.id === 'art_27' || (a.category === 'deposit' && a.price > 0));
+      let minusArt = articles.find(a => a.id === 'art_28' || (a.category === 'deposit' && a.price < 0));
+
+      if (!plusArt) {
+        plusArt = { id: 'art_27', name: 'Pfand (+)', price: 2.00, category: 'deposit' };
+        articles.push(plusArt);
+        saveArticlesToStorage();
+      }
+      if (!minusArt) {
+        minusArt = { id: 'art_28', name: 'Pfand-Rückgabe (-)', price: -2.00, category: 'deposit' };
+        articles.push(minusArt);
+        saveArticlesToStorage();
+      }
+
+      return { plusArt, minusArt };
+    }
+
+    function quickAdjustPfand(delta) {
+      playBeep('click');
+      triggerHaptic();
+
+      const { plusArt, minusArt } = getDepositArticles();
+
+      if (delta > 0) {
+        // Pfand erhöhen: falls Rückgabe-Pfand vorhanden ist, zuerst dieses abbauen
+        if (cart[minusArt.id] && cart[minusArt.id] > 0) {
+          cart[minusArt.id] -= 1;
+          if (cart[minusArt.id] <= 0) delete cart[minusArt.id];
+        } else {
+          cart[plusArt.id] = (cart[plusArt.id] || 0) + 1;
+        }
+      } else if (delta < 0) {
+        // Pfand verringern: falls Positiv-Pfand vorhanden ist, dieses abbauen
+        if (cart[plusArt.id] && cart[plusArt.id] > 0) {
+          cart[plusArt.id] -= 1;
+          if (cart[plusArt.id] <= 0) delete cart[plusArt.id];
+        } else {
+          // Sonst als Pfand-Rückgabe einbuchen
+          cart[minusArt.id] = (cart[minusArt.id] || 0) + 1;
+        }
+      }
+
+      renderCart();
+      renderProductGrid();
+    }
+
+    function syncPfandWithDrinks() {
+      playBeep('click');
+      triggerHaptic();
+
+      const drinkCount = getDrinkCountInCart();
+      const { plusArt, minusArt } = getDepositArticles();
+
+      // Rückgabe-Pfand zurücksetzen
+      if (cart[minusArt.id]) {
+        delete cart[minusArt.id];
+      }
+
+      // Positives Pfand exakt auf Anzahl der Getränke setzen
+      if (drinkCount > 0) {
+        cart[plusArt.id] = drinkCount;
+      } else {
+        delete cart[plusArt.id];
+      }
+
+      renderCart();
+      renderProductGrid();
+    }
+
+    // --- CART LOGIC ---
+    function addToCart(articleId) {
+      playBeep('click');
+      triggerHaptic();
+
+      if (!cart[articleId]) {
+        cart[articleId] = 0;
+      }
+      cart[articleId] += 1;
+
+      renderCart();
+      renderProductGrid(); // Update badge
+    }
+
+    function changeCartQuantity(articleId, delta) {
+      playBeep('click');
+      triggerHaptic();
+
+      if (!cart[articleId]) return;
+
+      cart[articleId] += delta;
+      if (cart[articleId] <= 0) {
+        delete cart[articleId];
+      }
+
+      renderCart();
+      renderProductGrid();
+    }
+
+    function removeFromCart(articleId) {
+      playBeep('click');
+      triggerHaptic();
+      delete cart[articleId];
+      renderCart();
+      renderProductGrid();
+    }
+
+    function calculateCartTotal() {
+      let total = 0;
+      for (const [artId, qty] of Object.entries(cart)) {
+        const article = articles.find(a => a.id === artId);
+        if (article) {
+          total += article.price * qty;
+        }
+      }
+      return Math.round(total * 100) / 100;
+    }
+
+    function renderCart() {
+      const tbody = document.getElementById('cartTableBody');
+      const emptyState = document.getElementById('cartEmptyState');
+      const totalDisplay = document.getElementById('totalDisplay');
+      const payButton = document.getElementById('payButton');
+      const pfandQuickBar = document.getElementById('pfandQuickBar');
+
+      const itemIds = Object.keys(cart);
+      const drinkCount = getDrinkCountInCart();
+      const { plusArt, minusArt } = getDepositArticles();
+      const plusQty = cart[plusArt.id] || 0;
+      const minusQty = cart[minusArt.id] || 0;
+      const netPfand = plusQty - minusQty;
+
+      // Pfand-Schnellwahl Leiste aktualisieren
+      if (pfandQuickBar) {
+        if (drinkCount > 0 || plusQty > 0 || minusQty > 0) {
+          pfandQuickBar.style.display = 'flex';
+          const badge = document.getElementById('pfandDrinkCountBadge');
+          const countDisplay = document.getElementById('pfandQuickCount');
+          const infoDisplay = document.getElementById('pfandQuickInfo');
+          
+          if (badge) badge.textContent = drinkCount;
+          if (countDisplay) {
+            countDisplay.textContent = (netPfand > 0 ? '+' : '') + netPfand;
+            countDisplay.className = 'qty-display ' + (netPfand > 0 ? 'text-success' : (netPfand < 0 ? 'text-danger' : 'text-muted'));
+          }
+          if (infoDisplay) {
+            infoDisplay.textContent = `${drinkCount} Getränk${drinkCount === 1 ? '' : 'e'} • Pfand: ${netPfand}x (${formatCurrency(netPfand * (plusArt.price || 2.00))})`;
+          }
+        } else {
+          pfandQuickBar.style.display = 'none';
+        }
+      }
+
+      if (itemIds.length === 0) {
+        tbody.innerHTML = '';
+        emptyState.style.display = 'block';
+        totalDisplay.textContent = '0,00 €';
+        payButton.disabled = true;
+        updateChangeCalculation();
+        return;
+      }
+
+      emptyState.style.display = 'none';
+
+      let html = '';
+      for (const artId of itemIds) {
+        const article = articles.find(a => a.id === artId);
+        if (!article) continue;
+
+        const qty = cart[artId];
+        const lineTotal = article.price * qty;
+
+        html += `
+          <tr>
+            <td>
+              <div class="fw-bold text-dark text-truncate" style="max-width: 170px;" title="${escapeHtml(article.name)}">
+                ${escapeHtml(article.name)}
+              </div>
+              <small class="text-muted">${formatCurrency(article.price)} / Stk.</small>
+            </td>
+            <td style="text-align: center;">
+              <div class="d-inline-flex align-items-center gap-1">
+                <button class="btn btn-outline-secondary qty-btn" onclick="changeCartQuantity('${artId}', -1)" title="Menge -1">
+                  <i class="bi bi-dash"></i>
+                </button>
+                <span class="qty-display">${qty}</span>
+                <button class="btn btn-outline-primary qty-btn" onclick="changeCartQuantity('${artId}', 1)" title="Menge +1">
+                  <i class="bi bi-plus"></i>
+                </button>
+              </div>
+            </td>
+            <td style="text-align: right;" class="fw-bold fs-6">
+              ${formatCurrency(lineTotal)}
+            </td>
+            <td style="text-align: center;">
+              <button class="btn btn-link text-danger p-0" onclick="removeFromCart('${artId}')" title="Artikel entfernen">
+                <i class="bi bi-trash3"></i>
+              </button>
+            </td>
+          </tr>
+        `;
+      }
+
+      tbody.innerHTML = html;
+
+      const total = calculateCartTotal();
+      totalDisplay.textContent = formatCurrency(total);
+      payButton.disabled = total === 0 && itemIds.length === 0;
+
+      updateChangeCalculation();
+    }
+
+    function resetCart(askConfirm = false) {
+      if (askConfirm && Object.keys(cart).length > 0) {
+        showConfirmDialog(
+          "Warenkorb leeren?",
+          "Möchtest du alle Artikel aus dem aktuellen Warenkorb entfernen?",
+          () => {
+            executeResetCart();
+          },
+          "Warenkorb leeren",
+          "btn-danger"
+        );
+        return;
+      }
+      executeResetCart();
+    }
+
+    function executeResetCart() {
+      playBeep('click');
+      cart = {};
+      clearGiven();
+      renderCart();
+      renderProductGrid();
+    }
+
+    // --- CASH & CHANGE CALCULATION ---
+    function handleGivenChange(val) {
+      givenAmount = parseFloat(val) || 0;
+      updateChangeCalculation();
+    }
+
+    function setGivenExact() {
+      playBeep('click');
+      triggerHaptic();
+      const total = calculateCartTotal();
+      if (total <= 0) return;
+      givenAmount = total;
+      document.getElementById('givenInput').value = total.toFixed(2);
+      updateChangeCalculation();
+    }
+
+    function setGivenPreset(amount) {
+      playBeep('click');
+      triggerHaptic();
+      givenAmount = amount;
+      document.getElementById('givenInput').value = amount.toFixed(2);
+      updateChangeCalculation();
+    }
+
+    function clearGiven() {
+      givenAmount = 0;
+      document.getElementById('givenInput').value = '';
+      updateChangeCalculation();
+    }
+
+    function updateChangeCalculation() {
+      const total = calculateCartTotal();
+      const changeBox = document.getElementById('changeBox');
+      const changeDisplay = document.getElementById('changeDisplay');
+      const changeLabel = document.getElementById('changeLabel');
+      const changeSubtext = document.getElementById('changeSubtext');
+
+      // Update Quick-Cash active states
+      document.querySelectorAll('.btn-quick-cash').forEach(btn => {
+        btn.classList.remove('active-match');
+      });
+
+      if (total <= 0) {
+        changeBox.className = 'change-box status-neutral mb-2';
+        changeLabel.textContent = 'Bereit';
+        changeSubtext.textContent = 'Noch keine Summe offen';
+        changeDisplay.textContent = '0,00 €';
+        return;
+      }
+
+      if (givenAmount <= 0) {
+        changeBox.className = 'change-box status-neutral mb-2';
+        changeLabel.textContent = 'Rückgeld';
+        changeSubtext.textContent = 'Gegebenen Betrag wählen oder eingeben';
+        changeDisplay.textContent = '0,00 €';
+        return;
+      }
+
+      const diff = Math.round((givenAmount - total) * 100) / 100;
+
+      if (diff >= 0) {
+        // Sufficient money
+        changeBox.className = 'change-box status-ok mb-2';
+        changeLabel.textContent = 'Rückgeld herausgeben';
+        changeSubtext.textContent = `Gegeben: ${formatCurrency(givenAmount)} (Summe: ${formatCurrency(total)})`;
+        changeDisplay.textContent = formatCurrency(diff);
+      } else {
+        // Missing money
+        changeBox.className = 'change-box status-missing mb-2';
+        changeLabel.textContent = 'Es fehlen noch:';
+        changeSubtext.textContent = `Gegeben: ${formatCurrency(givenAmount)} von ${formatCurrency(total)}`;
+        changeDisplay.textContent = formatCurrency(Math.abs(diff));
+      }
+    }
+
+    // --- CHECKOUT PROCESS ---
+    function completeCheckout() {
+      const total = calculateCartTotal();
+      if (total === 0 && Object.keys(cart).length === 0) return;
+
+      const change = Math.max(0, Math.round((givenAmount - total) * 100) / 100);
+
+      // Record in sales history
+      const orderRecord = {
+        id: 'ord_' + Date.now(),
+        timestamp: new Date().toISOString(),
+        total: total,
+        given: givenAmount,
+        change: change,
+        items: []
+      };
+
+      for (const [artId, qty] of Object.entries(cart)) {
+        const article = articles.find(a => a.id === artId);
+        if (article) {
+          orderRecord.items.push({
+            id: article.id,
+            name: article.name,
+            price: article.price,
+            quantity: qty
+          });
+        }
+      }
+
+      salesHistory.push(orderRecord);
+      saveSalesToStorage();
+
+      // Audio & Feedback
+      playBeep('success');
+      triggerHaptic();
+
+      // Show toast
+      showToast("Zahlung erfolgreich!", `Rückgeld: ${formatCurrency(change)}`);
+
+      // Reset cart and given
+      cart = {};
+      clearGiven();
+      renderCart();
+      renderProductGrid();
+    }
+
+    function showToast(title, message) {
+      const toast = document.getElementById('toastNotification');
+      document.getElementById('toastTitle').textContent = title;
+      document.getElementById('toastMessage').textContent = message;
+      toast.style.display = 'flex';
+
+      clearTimeout(window.toastTimer);
+      window.toastTimer = setTimeout(() => {
+        toast.style.display = 'none';
+      }, 3500);
+    }
+
+    // --- FULLSCREEN HANDLER ---
+    function toggleFullscreen() {
+      const icon = document.getElementById('fullscreenIcon');
+      if (!document.fullscreenElement) {
+        document.documentElement.requestFullscreen().then(() => {
+          icon.className = 'bi bi-fullscreen-exit';
+        }).catch(err => {});
+      } else {
+        document.exitFullscreen().then(() => {
+          icon.className = 'bi bi-fullscreen';
+        }).catch(err => {});
+      }
+    }
+
+    // --- SETTINGS MODAL & ARTICLE MANAGER ---
+    function openSettingsModal() {
+      renderArticleManagerTable();
+      const modal = new bootstrap.Modal(document.getElementById('settingsModal'));
+      modal.show();
+    }
+
+    function renderArticleManagerTable() {
+      const tbody = document.getElementById('articleManagerTableBody');
+      const badge = document.getElementById('articleCountBadge');
+      badge.textContent = articles.length;
+
+      let html = '';
+      articles.forEach((art, index) => {
+        html += `
+          <tr>
+            <td>
+              <div class="fw-bold">${escapeHtml(art.name)}</div>
+            </td>
+            <td>
+              <span class="badge bg-light text-dark border">${CATEGORY_NAMES[art.category] || art.category || 'Sonstiges'}</span>
+            </td>
+            <td style="text-align: right;" class="fw-bold">
+              ${formatCurrency(art.price)}
+            </td>
+            <td style="text-align: center;">
+              <div class="btn-group btn-group-sm">
+                <button class="btn btn-outline-primary" onclick="editArticle('${art.id}')" title="Bearbeiten">
+                  <i class="bi bi-pencil"></i>
+                </button>
+                <button class="btn btn-outline-danger" onclick="deleteArticle('${art.id}')" title="Löschen">
+                  <i class="bi bi-trash3"></i>
+                </button>
+              </div>
+            </td>
+          </tr>
+        `;
+      });
+
+      tbody.innerHTML = html;
+    }
+
+    function handleSaveArticle(event) {
+      event.preventDefault();
+      const id = document.getElementById('editArticleId').value;
+      const name = document.getElementById('articleNameInput').value.trim();
+      const priceRaw = document.getElementById('articlePriceInput').value;
+      const category = document.getElementById('articleCategoryInput').value;
+
+      if (!name) return;
+      const price = parseGermanPrice(priceRaw);
+
+      if (id) {
+        // Edit existing
+        const idx = articles.findIndex(a => a.id === id);
+        if (idx !== -1) {
+          articles[idx] = { ...articles[idx], name, price, category };
+        }
+      } else {
+        // Add new
+        const newArt = {
+          id: 'art_' + Date.now() + '_' + Math.floor(Math.random() * 1000),
+          name,
+          price,
+          category
+        };
+        articles.push(newArt);
+      }
+
+      saveArticlesToStorage();
+      cancelEditArticle();
+      renderArticleManagerTable();
+      showToast("Sortiment aktualisiert", name);
+    }
+
+    function editArticle(id) {
+      const art = articles.find(a => a.id === id);
+      if (!art) return;
+
+      document.getElementById('editArticleId').value = art.id;
+      document.getElementById('articleNameInput').value = art.name;
+      document.getElementById('articlePriceInput').value = art.price.toFixed(2).replace('.', ',');
+      document.getElementById('articleCategoryInput').value = art.category || 'other';
+
+      document.getElementById('articleFormTitle').innerHTML = '<i class="bi bi-pencil-fill me-1"></i> Artikel bearbeiten';
+      document.getElementById('articleSaveBtn').innerHTML = '<i class="bi bi-check-lg"></i> Aktualisieren';
+      document.getElementById('articleCancelEditBtn').style.display = 'inline-block';
+    }
+
+    function cancelEditArticle() {
+      document.getElementById('editArticleId').value = '';
+      document.getElementById('articleForm').reset();
+      document.getElementById('articleFormTitle').innerHTML = '<i class="bi bi-plus-circle-fill me-1"></i> Artikel hinzufügen';
+      document.getElementById('articleSaveBtn').innerHTML = '<i class="bi bi-check-lg"></i> Speichern';
+      document.getElementById('articleCancelEditBtn').style.display = 'none';
+    }
+
+    // --- IN-APP CONFIRMATION MODAL (Verhindert das Verlassen des Vollbildmodus!) ---
+    function showConfirmDialog(title, message, onConfirm, confirmBtnText = "Bestätigen", confirmBtnClass = "btn-danger") {
+      document.getElementById('confirmModalTitle').textContent = title;
+      document.getElementById('confirmModalBody').textContent = message;
+      const btn = document.getElementById('confirmModalConfirmBtn');
+      btn.textContent = confirmBtnText;
+      btn.className = `btn ${confirmBtnClass} px-4 fw-bold`;
+      btn.onclick = () => {
+        const modalEl = document.getElementById('confirmModal');
+        const modalInstance = bootstrap.Modal.getInstance(modalEl);
+        if (modalInstance) modalInstance.hide();
+        onConfirm();
+      };
+      const modal = new bootstrap.Modal(document.getElementById('confirmModal'));
+      modal.show();
+    }
+
+    function deleteArticle(id) {
+      const art = articles.find(a => a.id === id);
+      if (!art) return;
+
+      showConfirmDialog(
+        "Artikel löschen?",
+        `Möchtest du "${art.name}" wirklich aus dem Sortiment entfernen?`,
+        () => {
+          articles = articles.filter(a => a.id !== id);
+          if (cart[id]) {
+            delete cart[id];
+          }
+          saveArticlesToStorage();
+          renderArticleManagerTable();
+          showToast("Artikel gelöscht", art.name);
+        },
+        "Artikel löschen",
+        "btn-danger"
+      );
+    }
+
+    function confirmResetDefaults() {
+      showConfirmDialog(
+        "Auf Standard zurücksetzen?",
+        "Möchtest du wirklich alle Artikel auf die Standard-Speisekarte zurücksetzen? Eigene Änderungen gehen dabei verloren.",
+        () => {
+          articles = JSON.parse(JSON.stringify(DEFAULT_ARTICLES));
+          saveArticlesToStorage();
+          renderArticleManagerTable();
+          showToast("Standard-Sortiment geladen", "");
+        },
+        "Auf Standard zurücksetzen",
+        "btn-danger"
+      );
+    }
+
+    // --- BACKUP & JSON EXPORT / IMPORT ---
+    function exportArticlesJSON() {
+      const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(articles, null, 2));
+      const downloadAnchor = document.createElement('a');
+      downloadAnchor.setAttribute("href", dataStr);
+      downloadAnchor.setAttribute("download", `kassensystem_speisekarte_${new Date().toISOString().slice(0, 10)}.json`);
+      document.body.appendChild(downloadAnchor);
+      downloadAnchor.click();
+      downloadAnchor.remove();
+      showToast("Download gestartet", "Speisekarte exportiert");
+    }
+
+    function copyArticlesJSONToClipboard() {
+      const jsonStr = JSON.stringify(articles, null, 2);
+      navigator.clipboard.writeText(jsonStr).then(() => {
+        showToast("In Zwischenablage kopiert", "JSON bereit zum Einfügen");
+      }).catch(err => {
+        showToast("Fehler beim Kopieren", err);
+      });
+    }
+
+    function handleJSONFileUpload(event) {
+      const file = event.target.files[0];
+      if (!file) return;
+
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        try {
+          const parsed = JSON.parse(e.target.result);
+          if (Array.isArray(parsed) && parsed.length > 0) {
+            articles = sanitizeArticles(parsed);
+            saveArticlesToStorage();
+            renderArticleManagerTable();
+            showToast("Import erfolgreich", `${articles.length} Artikel geladen`);
+          } else {
+            showToast("Fehler beim Import", "Kein gültiges Artikel-Array gefunden");
+          }
+        } catch (err) {
+          showToast("Fehler beim Lesen", err.message);
+        }
+      };
+      reader.readAsText(file);
+    }
+
+    function importArticlesFromText() {
+      const text = document.getElementById('jsonPasteArea').value.trim();
+      if (!text) {
+        showToast("Hinweis", "Bitte füge zuerst JSON-Code in das Textfeld ein.");
+        return;
+      }
+
+      try {
+        const parsed = JSON.parse(text);
+        if (Array.isArray(parsed) && parsed.length > 0) {
+          articles = sanitizeArticles(parsed);
+          saveArticlesToStorage();
+          renderArticleManagerTable();
+          document.getElementById('jsonPasteArea').value = '';
+          showToast("Import erfolgreich", `${articles.length} Artikel importiert`);
+        } else {
+          showToast("Ungültiges Format", "Kein gültiges Artikel-Array.");
+        }
+      } catch (err) {
+        showToast("JSON Fehler", err.message);
+      }
+    }
+
+    function sanitizeArticles(rawList) {
+      return rawList.map((item, i) => ({
+        id: item.id || ('art_' + Date.now() + '_' + i),
+        name: String(item.name || 'Unbenannter Artikel'),
+        price: Number(item.price) || 0,
+        category: item.category || 'other'
+      }));
+    }
+
+    // --- STATS & REVENUE MODAL ---
+    function openStatsModal() {
+      renderStatsModal();
+      const modal = new bootstrap.Modal(document.getElementById('statsModal'));
+      modal.show();
+    }
+
+    function renderStatsModal() {
+      const totalRev = salesHistory.reduce((s, o) => s + (o.total || 0), 0);
+      const totalOrders = salesHistory.length;
+      
+      let totalItemCount = 0;
+      const itemMap = {}; // name -> { count, revenue, price }
+
+      salesHistory.forEach(order => {
+        (order.items || []).forEach(item => {
+          totalItemCount += item.quantity;
+          if (!itemMap[item.name]) {
+            itemMap[item.name] = { count: 0, revenue: 0, price: item.price };
+          }
+          itemMap[item.name].count += item.quantity;
+          itemMap[item.name].revenue += item.quantity * item.price;
+        });
+      });
+
+      document.getElementById('statsTotalRevenue').textContent = formatCurrency(totalRev);
+      document.getElementById('statsTotalOrders').textContent = totalOrders;
+      document.getElementById('statsTotalItems').textContent = totalItemCount + ' Stk.';
+
+      const tbody = document.getElementById('statsTableBody');
+      if (Object.keys(itemMap).length === 0) {
+        tbody.innerHTML = '<tr><td colspan="4" class="text-center text-muted p-3">Noch keine Verkäufe aufgezeichnet.</td></tr>';
+        return;
+      }
+
+      let html = '';
+      const sortedItems = Object.entries(itemMap).sort((a, b) => b[1].count - a[1].count);
+
+      sortedItems.forEach(([name, data]) => {
+        html += `
+          <tr>
+            <td class="fw-bold">${escapeHtml(name)}</td>
+            <td style="text-align: center;"><span class="badge bg-primary fs-6">${data.count}x</span></td>
+            <td style="text-align: right;">${formatCurrency(data.price)}</td>
+            <td style="text-align: right;" class="fw-bold text-success">${formatCurrency(data.revenue)}</td>
+          </tr>
+        `;
+      });
+
+      tbody.innerHTML = html;
+    }
+
+    function confirmResetStats() {
+      showConfirmDialog(
+        "Statistik zurücksetzen?",
+        "Möchtest du die Verkaufsstatistik für heute wirklich zurücksetzen?",
+        () => {
+          salesHistory = [];
+          saveSalesToStorage();
+          renderStatsModal();
+          showToast("Statistik zurückgesetzt", "");
+        },
+        "Statistik zurücksetzen",
+        "btn-danger"
+      );
+    }
+
+    function exportStatsCSV() {
+      if (salesHistory.length === 0) {
+        showToast("Hinweis", "Keine Verkaufsdaten zum Exportieren vorhanden.");
+        return;
+      }
+
+      let csv = "Zeitstempel;Bestell-ID;Artikel;Einzelpreis_EUR;Menge;Zeilensumme_EUR\n";
+      salesHistory.forEach(order => {
+        const time = order.timestamp ? new Date(order.timestamp).toLocaleString('de-DE') : '';
+        (order.items || []).forEach(item => {
+          csv += `"${time}";"${order.id}";"${item.name}";${item.price.toFixed(2).replace('.', ',')};${item.quantity};${(item.price * item.quantity).toFixed(2).replace('.', ',')}\n`;
+        });
+      });
+
+      const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `kassenbericht_${new Date().toISOString().slice(0, 10)}.csv`;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+    }
+
+    // --- KEYBOARD SHORTCUTS FOR CONVENIENCE ---
+    document.addEventListener('keydown', (e) => {
+      // Don't trigger shortcuts if focus is in modal or input
+      if (['INPUT', 'TEXTAREA', 'SELECT'].includes(document.activeElement.tagName)) {
+        if (e.key === 'Escape') {
+          document.activeElement.blur();
+        }
+        return;
+      }
+
+      if (e.key === 'Escape') {
+        resetCart(true);
+      } else if (e.key === 'Enter' || e.key === ' ') {
+        if (calculateCartTotal() > 0) {
+          e.preventDefault();
+          completeCheckout();
+        }
+      }
+    });
+
+    // --- HELPER FUNCTIONS ---
+    function escapeHtml(text) {
+      if (!text) return '';
+      return String(text)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#039;');
+    }
+  </script>
+</body>
+</html>
