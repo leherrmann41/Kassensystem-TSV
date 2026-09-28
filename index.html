@@ -253,15 +253,30 @@
 
     .product-tile .prod-title {
       font-weight: 700;
-      font-size: clamp(0.78rem, 0.88vw, 0.94rem);
-      line-height: 1.18;
+      font-size: clamp(0.74rem, 0.85vw, 0.90rem);
+      line-height: 1.15;
       color: var(--primary-slate);
       margin-bottom: 0.15rem;
       display: -webkit-box;
-      -webkit-line-clamp: 3;
+      -webkit-line-clamp: 6;
       -webkit-box-orient: vertical;
       overflow: hidden;
       word-break: break-word;
+    }
+
+    .product-tile .prod-main-title {
+      font-weight: 700;
+      line-height: 1.15;
+    }
+
+    .product-tile .prod-sub-desc {
+      font-size: 0.70rem;
+      font-weight: 600;
+      color: #64748b;
+      line-height: 1.12;
+      margin-top: 0.12rem;
+      display: block;
+      font-style: italic;
     }
 
     .product-tile .prod-footer {
@@ -280,13 +295,40 @@
       white-space: nowrap;
     }
 
-    .product-tile .prod-cat-tag {
-      font-size: 0.65rem;
+    .product-tile .prod-tile-icon {
+      flex: 1 1 auto;
+      min-height: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: clamp(1.4rem, 1.8vw, 1.95rem);
+      line-height: 1;
+      padding: 0.1rem 0;
+      pointer-events: none;
+      transition: transform 0.15s ease, opacity 0.15s ease;
+    }
+
+    .product-tile:hover .prod-tile-icon {
+      transform: scale(1.1);
+    }
+
+    .product-tile .prod-tile-icon svg.icon-cutlery {
+      width: 1.15em;
+      height: 1.15em;
+    }
+
+    .product-tile .prod-cat-pill {
+      font-size: 0.62rem;
       font-weight: 700;
       text-transform: uppercase;
       letter-spacing: 0.03em;
-      opacity: 0.6;
+      padding: 0.1rem 0.38rem;
+      border-radius: 4px;
       white-space: nowrap;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.2rem;
+      line-height: 1.1;
     }
 
     .product-tile .prod-badge-count {
@@ -317,8 +359,16 @@
       border-color: #93c5fd;
       border-left-color: #2563eb;
     }
-    .product-tile.category-drink .prod-cat-tag {
+    .product-tile.category-drink .prod-tile-icon {
+      color: #2563eb;
+      opacity: 0.75;
+    }
+    .product-tile.category-drink:hover .prod-tile-icon {
+      opacity: 1;
+    }
+    .product-tile.category-drink .prod-cat-pill {
       color: #1d4ed8;
+      background-color: #dbeafe;
     }
 
     .product-tile.category-food {
@@ -329,8 +379,16 @@
       border-color: #fdba74;
       border-left-color: #ea580c;
     }
-    .product-tile.category-food .prod-cat-tag {
+    .product-tile.category-food .prod-tile-icon {
+      color: #ea580c;
+      opacity: 0.75;
+    }
+    .product-tile.category-food:hover .prod-tile-icon {
+      opacity: 1;
+    }
+    .product-tile.category-food .prod-cat-pill {
       color: #c2410c;
+      background-color: #ffedd5;
     }
 
     .product-tile.category-sweets {
@@ -341,8 +399,16 @@
       border-color: #f9a8d4;
       border-left-color: #db2777;
     }
-    .product-tile.category-sweets .prod-cat-tag {
+    .product-tile.category-sweets .prod-tile-icon {
+      color: #db2777;
+      opacity: 0.75;
+    }
+    .product-tile.category-sweets:hover .prod-tile-icon {
+      opacity: 1;
+    }
+    .product-tile.category-sweets .prod-cat-pill {
       color: #be185d;
+      background-color: #fce7f3;
     }
 
     .product-tile.category-deposit {
@@ -353,13 +419,32 @@
       border-color: #6ee7b7;
       border-left-color: #059669;
     }
-    .product-tile.category-deposit .prod-cat-tag {
+    .product-tile.category-deposit .prod-tile-icon {
+      color: #059669;
+      opacity: 0.75;
+    }
+    .product-tile.category-deposit:hover .prod-tile-icon {
+      opacity: 1;
+    }
+    .product-tile.category-deposit .prod-cat-pill {
       color: #047857;
+      background-color: #d1fae5;
     }
 
     .product-tile.category-other {
       border-left: 5px solid #64748b;
       background: linear-gradient(135deg, #f8fafc 0%, #ffffff 50%);
+    }
+    .product-tile.category-other .prod-tile-icon {
+      color: #64748b;
+      opacity: 0.75;
+    }
+    .product-tile.category-other:hover .prod-tile-icon {
+      opacity: 1;
+    }
+    .product-tile.category-other .prod-cat-pill {
+      color: #475569;
+      background-color: #f1f5f9;
     }
 
     /* Cart & Cashier Section */
@@ -421,6 +506,28 @@
       border-radius: 0 0 10px 10px;
       padding: 0.5rem 0.65rem;
       flex-shrink: 0;
+    }
+
+    .cart-action-bar {
+      display: flex;
+      align-items: stretch;
+      gap: 0.35rem;
+      margin-bottom: 0.5rem;
+      min-height: 38px;
+    }
+
+    #btnClearCart {
+      min-height: 38px;
+      border-radius: 8px;
+      font-weight: 700;
+      transition: all 0.15s ease;
+      flex-shrink: 0;
+    }
+
+    #btnClearCart:hover:not(:disabled) {
+      background-color: #ef4444;
+      color: #ffffff;
+      border-color: #ef4444;
     }
 
     .total-display-card {
@@ -696,28 +803,37 @@
             <!-- Checkout / Cashier Panel -->
             <div class="checkout-panel">
               
-              <!-- Dynamic Pfand Quick Bar (Active when drinks or deposit items are in cart) -->
-              <div id="pfandQuickBar" class="p-2 mb-2 rounded-3 border bg-white shadow-sm d-flex flex-wrap align-items-center justify-content-between gap-1" style="border-left: 4px solid #10b981 !important; display: none;">
-                <div class="d-flex align-items-center gap-1">
-                  <div class="bg-success text-white rounded-circle d-flex align-items-center justify-content-center flex-shrink-0" style="width: 26px; height: 26px; font-size: 0.85rem;">
-                    <i class="bi bi-arrow-repeat"></i>
+              <!-- Cart Action Bar (Reset Cart Button & Narrower Pfand Quick Bar) -->
+              <div class="cart-action-bar mb-2" id="cartActionRow">
+                <!-- Reset Cart Button directly under shopping cart -->
+                <button id="btnClearCart" class="btn btn-outline-danger d-flex align-items-center justify-content-center flex-grow-1 py-1 px-2" onclick="resetCart(true)" title="Warenkorb leeren / Neu anfangen" disabled>
+                  <i class="bi bi-trash3-fill fs-5"></i>
+                  <span id="btnClearCartText" class="fw-bold small ms-1">Warenkorb leeren</span>
+                </button>
+
+                <!-- Dynamic Pfand Quick Bar (schmaler) -->
+                <div id="pfandQuickBar" class="flex-grow-1 p-1 px-2 rounded-3 border bg-white shadow-sm d-flex align-items-center justify-content-between gap-1" style="border-left: 4px solid #10b981 !important; display: none; min-height: 38px;">
+                  <div class="d-flex align-items-center gap-1 overflow-hidden">
+                    <div class="bg-success text-white rounded-circle d-flex align-items-center justify-content-center flex-shrink-0" style="width: 24px; height: 24px; font-size: 0.8rem;">
+                      <i class="bi bi-arrow-repeat"></i>
+                    </div>
+                    <div style="line-height: 1.1; white-space: nowrap;">
+                      <span class="fw-bold text-dark" style="font-size: 0.78rem;">Pfand (2€)</span>
+                      <small class="text-muted d-block" style="font-size: 0.7rem;" id="pfandQuickInfo">0x</small>
+                    </div>
                   </div>
-                  <div style="line-height: 1.1;">
-                    <div class="fw-bold text-dark" style="font-size: 0.82rem;">Pfand Schnellwahl (2 €)</div>
-                    <small class="text-muted" style="font-size: 0.72rem;" id="pfandQuickInfo">0 Getränke • 0x Pfand</small>
+                  <div class="d-flex align-items-center gap-1 flex-shrink-0">
+                    <button class="btn btn-outline-success btn-sm fw-bold px-1 py-0" style="font-size: 0.75rem; height: 26px;" onclick="syncPfandWithDrinks()" title="Pfand passend zur Anzahl der Getränke setzen">
+                      Passend (<span id="pfandDrinkCountBadge">0</span>)
+                    </button>
+                    <button class="btn btn-outline-secondary qty-btn" style="width: 26px; height: 26px; font-size: 0.85rem;" onclick="quickAdjustPfand(-1)" title="Pfand verringern / Rückgabe erfassen">
+                      <i class="bi bi-dash"></i>
+                    </button>
+                    <span class="qty-display" style="min-width: 18px; font-size: 0.9rem;" id="pfandQuickCount">0</span>
+                    <button class="btn btn-outline-success qty-btn" style="width: 26px; height: 26px; font-size: 0.85rem;" onclick="quickAdjustPfand(1)" title="Pfand hinzufügen">
+                      <i class="bi bi-plus"></i>
+                    </button>
                   </div>
-                </div>
-                <div class="d-flex align-items-center gap-1">
-                  <button class="btn btn-outline-success btn-sm fw-bold px-2 py-0" style="font-size: 0.78rem; height: 28px;" onclick="syncPfandWithDrinks()" title="Pfand passend zur Anzahl der Getränke setzen">
-                    <i class="bi bi-lightning-charge-fill"></i> Passend (<span id="pfandDrinkCountBadge">0</span>)
-                  </button>
-                  <button class="btn btn-outline-secondary qty-btn" onclick="quickAdjustPfand(-1)" title="Pfand verringern / Rückgabe erfassen">
-                    <i class="bi bi-dash"></i>
-                  </button>
-                  <span class="qty-display" id="pfandQuickCount">0</span>
-                  <button class="btn btn-outline-success qty-btn" onclick="quickAdjustPfand(1)" title="Pfand hinzufügen">
-                    <i class="bi bi-plus"></i>
-                  </button>
                 </div>
               </div>
 
@@ -1337,16 +1453,13 @@
           ? articles.length 
           : articles.filter(a => (a.category || 'other') === cat).length;
 
-        let icon = 'bi-tag';
-        if (cat === 'all') icon = 'bi-grid-fill';
-        else if (cat === 'food') icon = 'bi-fire';
-        else if (cat === 'drink') icon = 'bi-cup-straw';
-        else if (cat === 'sweets') icon = 'bi-cake2';
-        else if (cat === 'deposit') icon = 'bi-arrow-repeat';
+        let iconHtml = '<i class="bi bi-tag"></i>';
+        if (cat === 'all') iconHtml = '<i class="bi bi-grid-fill"></i>';
+        else iconHtml = getCategoryIconHtml(cat);
 
         html += `
           <button class="cat-btn ${isActive}" onclick="setCategoryFilter('${cat}')">
-            <i class="bi ${icon}"></i> 
+            ${iconHtml}
             <span>${label}</span>
             <span class="badge rounded-pill bg-light text-dark border ms-1" style="font-size: 0.72rem; opacity: 0.9;">${count}</span>
           </button>
@@ -1394,21 +1507,69 @@
           : '';
 
         const catClass = `category-${art.category || 'other'}`;
-        const catName = CATEGORY_NAMES[art.category] || '';
+        const catIconHtml = getCategoryIconHtml(art.category, art.name);
+        const catShortLabel = getCategoryShortLabel(art.category, art.name);
+        const titleHtml = renderProductTitleHtml(art.name);
 
         html += `
           <div class="product-tile ${catClass}" onclick="addToCart('${art.id}')" title="${escapeHtml(art.name)}">
             ${badgeHtml}
-            <div class="prod-title">${escapeHtml(art.name)}</div>
+            <div class="prod-title">${titleHtml}</div>
+            <div class="prod-tile-icon">${catIconHtml}</div>
             <div class="prod-footer">
               <span class="prod-price">${formatCurrency(art.price)}</span>
-              <span class="prod-cat-tag">${escapeHtml(catName)}</span>
+              <span class="prod-cat-pill">${escapeHtml(catShortLabel)}</span>
             </div>
           </div>
         `;
       });
 
       grid.innerHTML = html;
+    }
+
+    function getCategoryIconHtml(category, name = '', extraClass = '') {
+      const lower = (name || '').toLowerCase();
+      if (category === 'food') {
+        return `<svg class="icon-cutlery ${extraClass}" viewBox="0 0 24 24" width="1em" height="1em" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align: -0.12em; display: inline-block;"><path d="M5 2v5a3 3 0 0 0 6 0V2"/><line x1="8" y1="2" x2="8" y2="7"/><line x1="8" y1="10" x2="8" y2="22"/><path d="M16 2v7a2.5 2.5 0 0 0 2.5 2.5H19V2h-3z"/><line x1="16" y1="11.5" x2="16" y2="22"/></svg>`;
+      }
+      if (category === 'drink') {
+        if (lower.includes('kaffee') || lower.includes('tee')) {
+          return `<i class="bi bi-cup-hot ${extraClass}"></i>`;
+        }
+        return `<i class="bi bi-cup-straw ${extraClass}"></i>`;
+      }
+      if (category === 'sweets') {
+        if (lower.includes('kaffee') || lower.includes('tee') || lower.includes('cappuccino')) {
+          return `<i class="bi bi-cup-hot ${extraClass}"></i>`;
+        }
+        return `<i class="bi bi-cake2 ${extraClass}"></i>`;
+      }
+      if (category === 'deposit') {
+        return `<i class="bi bi-arrow-repeat ${extraClass}"></i>`;
+      }
+      return `<i class="bi bi-tag ${extraClass}"></i>`;
+    }
+
+    function getCategoryShortLabel(category, name = '') {
+      if (category === 'food') return 'Essen';
+      if (category === 'drink') return 'Getränke';
+      if (category === 'sweets') {
+        if ((name || '').toLowerCase().includes('kaffee')) return 'Kaffee';
+        return 'Kuchen';
+      }
+      if (category === 'deposit') return 'Pfand';
+      return CATEGORY_NAMES[category] || 'Sonstiges';
+    }
+
+    function renderProductTitleHtml(rawName) {
+      if (!rawName) return '';
+      const match = rawName.length > 20 ? rawName.match(/^(.*?)\s*(\(.*?\))\s*$/) : null;
+      if (match) {
+        const mainPart = escapeHtml(match[1]);
+        const subPart = escapeHtml(match[2]);
+        return `<div class="prod-main-title">${mainPart}</div><span class="prod-sub-desc">${subPart}</span>`;
+      }
+      return `<div class="prod-main-title">${escapeHtml(rawName)}</div>`;
     }
 
     // --- PFAND & GETRÄNKE HELPER ---
@@ -1555,10 +1716,25 @@
       const minusQty = cart[minusArt.id] || 0;
       const netPfand = plusQty - minusQty;
 
+      // Reset-Button für Warenkorb aktivieren / anpassen
+      const btnClearCart = document.getElementById('btnClearCart');
+      const btnClearCartText = document.getElementById('btnClearCartText');
+      if (btnClearCart) {
+        btnClearCart.disabled = itemIds.length === 0;
+      }
+
       // Pfand-Schnellwahl Leiste aktualisieren
       if (pfandQuickBar) {
         if (drinkCount > 0 || plusQty > 0 || minusQty > 0) {
           pfandQuickBar.style.display = 'flex';
+          if (btnClearCart) {
+            btnClearCart.classList.remove('flex-grow-1');
+            btnClearCart.style.width = '42px';
+            btnClearCart.setAttribute('title', 'Warenkorb leeren (Neu anfangen)');
+          }
+          if (btnClearCartText) {
+            btnClearCartText.style.display = 'none';
+          }
           const badge = document.getElementById('pfandDrinkCountBadge');
           const countDisplay = document.getElementById('pfandQuickCount');
           const infoDisplay = document.getElementById('pfandQuickInfo');
@@ -1569,10 +1745,18 @@
             countDisplay.className = 'qty-display ' + (netPfand > 0 ? 'text-success' : (netPfand < 0 ? 'text-danger' : 'text-muted'));
           }
           if (infoDisplay) {
-            infoDisplay.textContent = `${drinkCount} Getränk${drinkCount === 1 ? '' : 'e'} • Pfand: ${netPfand}x (${formatCurrency(netPfand * (plusArt.price || 2.00))})`;
+            infoDisplay.textContent = `${drinkCount} Getr. • ${netPfand}x`;
           }
         } else {
           pfandQuickBar.style.display = 'none';
+          if (btnClearCart) {
+            btnClearCart.classList.add('flex-grow-1');
+            btnClearCart.style.width = 'auto';
+            btnClearCart.setAttribute('title', 'Warenkorb leeren (Neu anfangen)');
+          }
+          if (btnClearCartText) {
+            btnClearCartText.style.display = 'inline';
+          }
         }
       }
 
@@ -1852,7 +2036,7 @@
               <div class="fw-bold">${escapeHtml(art.name)}</div>
             </td>
             <td>
-              <span class="badge bg-light text-dark border">${CATEGORY_NAMES[art.category] || art.category || 'Sonstiges'}</span>
+              <span class="badge bg-light text-dark border">${getCategoryIconHtml(art.category, art.name, 'me-1')} ${CATEGORY_NAMES[art.category] || art.category || 'Sonstiges'}</span>
             </td>
             <td style="text-align: right;" class="fw-bold">
               ${formatCurrency(art.price)}
