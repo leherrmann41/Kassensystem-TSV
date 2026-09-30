@@ -3,6 +3,11 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="TSV Kasse">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="theme-color" content="#202938">
   <title>Vereinskasse & Kassenhelfer</title>
   
   <!-- Bootstrap 5.3 CSS -->
@@ -191,36 +196,132 @@
       gap: 0.35rem;
     }
 
-    /* All articles mode: fills 100% height, zero vertical scroll in landscape */
-    @media (min-width: 1200px) {
+    /* All articles mode: 8 columns x 4 rows, fills 100% height, zero vertical scroll in landscape */
+    @media (min-width: 992px) {
       .product-grid.grid-all-view {
         height: 100%;
-        grid-template-columns: repeat(7, 1fr);
-        grid-auto-rows: 1fr;
-      }
-    }
-
-    @media (min-width: 992px) and (max-width: 1199.98px) {
-      .product-grid.grid-all-view {
-        height: 100%;
-        grid-template-columns: repeat(6, 1fr);
-        grid-auto-rows: 1fr;
+        grid-template-columns: repeat(8, 1fr);
+        grid-template-rows: repeat(4, 1fr);
+        gap: 0.28rem;
       }
     }
 
     @media (min-width: 992px) {
       .product-grid:not(.grid-all-view) {
-        grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
-        grid-auto-rows: minmax(75px, auto);
+        grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+        grid-auto-rows: minmax(72px, auto);
         align-content: start;
+        gap: 0.32rem;
       }
     }
 
     @media (max-width: 991.98px) {
       .product-grid {
-        grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
-        grid-auto-rows: minmax(70px, auto);
+        grid-template-columns: repeat(auto-fill, minmax(105px, 1fr));
+        grid-auto-rows: minmax(66px, auto);
+        gap: 0.25rem;
       }
+    }
+
+    /* Narrower Tile Adjustments for 8-Column Grid View */
+    .product-grid.grid-all-view .product-tile {
+      padding: 0.28rem 0.36rem;
+      min-height: 52px;
+    }
+
+    .product-grid.grid-all-view .product-tile .prod-title {
+      font-size: clamp(0.66rem, 0.74vw, 0.82rem);
+      line-height: 1.12;
+      margin-bottom: 0.1rem;
+      -webkit-line-clamp: 4;
+    }
+
+    .product-grid.grid-all-view .product-tile .prod-main-title {
+      font-size: clamp(0.66rem, 0.74vw, 0.82rem);
+      line-height: 1.12;
+    }
+
+    .product-grid.grid-all-view .product-tile .prod-sub-desc {
+      font-size: 0.62rem;
+      line-height: 1.08;
+      margin-top: 0.08rem;
+    }
+
+    .product-grid.grid-all-view .product-tile .prod-tile-icon {
+      font-size: clamp(1.05rem, 1.35vw, 1.55rem);
+      padding: 0.04rem 0;
+    }
+
+    .product-grid.grid-all-view .product-tile .prod-price {
+      font-size: clamp(0.85rem, 0.96vw, 1.1rem);
+      letter-spacing: -0.01em;
+    }
+
+    /* Category pills hidden in all-view to keep price large and prominent */
+    .product-grid.grid-all-view .product-tile .prod-cat-pill {
+      display: none !important;
+    }
+
+    /* Row break forcing element to start at column 1 of a new line */
+    .product-grid.grid-all-view .grid-row-break {
+      grid-column-start: 1;
+    }
+
+    /* PIN Numpad & Protected Stats Tab Styling */
+    .pin-numpad-btn {
+      width: 62px;
+      height: 62px;
+      font-size: 1.35rem;
+      font-weight: 700;
+      border-radius: 12px;
+      margin: 4px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.1s ease;
+      touch-action: manipulation;
+    }
+    .pin-numpad-btn:active {
+      transform: scale(0.92);
+      background-color: var(--primary-slate) !important;
+      color: #fff !important;
+    }
+    .pin-display-dots {
+      font-size: 1.8rem;
+      letter-spacing: 0.45rem;
+      min-height: 48px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 180px;
+    }
+
+    /* Given Amount Touch Keypad Styling */
+    .keypad-btn {
+      width: 66px;
+      height: 54px;
+      font-size: 1.35rem;
+      font-weight: 700;
+      border-radius: 12px;
+      margin: 3px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.08s ease;
+      touch-action: manipulation;
+      user-select: none;
+      -webkit-user-select: none;
+    }
+    .keypad-btn:active {
+      transform: scale(0.92);
+      background-color: var(--primary-slate) !important;
+      color: #ffffff !important;
+    }
+    .keypad-display {
+      font-size: 1.85rem;
+      font-weight: 800;
+      color: var(--primary-slate);
+      letter-spacing: -0.01em;
     }
 
     /* Product Tile Button */
@@ -714,13 +815,6 @@
       </div>
 
       <div class="d-flex align-items-center gap-2">
-        <!-- Quick stats modal trigger -->
-        <button class="btn btn-outline-light btn-sm d-flex align-items-center gap-1 px-2 py-1" onclick="openStatsModal()" title="Tagesumsatz & Verkaufsstatistik">
-          <i class="bi bi-bar-chart-line-fill text-warning"></i>
-          <span class="d-none d-sm-inline">Umsatz: </span>
-          <span class="fw-bold text-warning" id="headerDailyTurnover">0,00 €</span>
-        </button>
-
         <!-- Clear / New customer -->
         <button class="btn btn-outline-danger btn-sm d-flex align-items-center gap-1 px-2 py-1" onclick="resetCart(true)" title="Warenkorb leeren">
           <i class="bi bi-arrow-counterclockwise"></i>
@@ -851,9 +945,14 @@
                     <i class="bi bi-x-circle me-1"></i>Löschen
                   </a>
                 </div>
-                <div class="input-group input-group-sm mb-1">
-                  <input type="number" step="0.01" min="0" id="givenInput" class="form-control form-control-lg fw-bold text-end" placeholder="0,00" oninput="handleGivenChange(this.value)">
-                  <span class="input-group-text fw-bold">€</span>
+                <div class="input-group input-group-sm mb-1" onclick="openGivenKeypad()" style="cursor: pointer;" title="Tastenfeld öffnen">
+                  <span class="input-group-text bg-light text-primary">
+                    <i class="bi bi-calculator-fill"></i>
+                  </span>
+                  <input type="text" id="givenInput" class="form-control form-control-lg fw-bold text-end bg-white" placeholder="0,00 €" readonly style="cursor: pointer; caret-color: transparent;" onclick="openGivenKeypad()">
+                  <button type="button" class="btn btn-outline-primary btn-sm fw-bold px-2" onclick="event.stopPropagation(); openGivenKeypad();" title="Betrag über Tastenfeld eingeben">
+                    <i class="bi bi-grid-3x3-gap-fill"></i>
+                  </button>
                 </div>
                 <div class="quick-cash-grid">
                   <button class="btn btn-outline-secondary btn-quick-cash" onclick="setGivenExact()">Passend</button>
@@ -935,6 +1034,11 @@
             <li class="nav-item" role="presentation">
               <button class="nav-link fw-bold text-dark" id="config-tab" data-bs-toggle="tab" data-bs-target="#configTabPane" type="button" role="tab">
                 <i class="bi bi-sliders me-1 text-warning"></i> Kassen-Optionen
+              </button>
+            </li>
+            <li class="nav-item" role="presentation">
+              <button class="nav-link fw-bold text-dark" id="stats-tab" data-bs-toggle="tab" data-bs-target="#statsTabPane" type="button" role="tab" onclick="onUmsatzTabClicked()">
+                <i class="bi bi-bar-chart-fill me-1 text-warning"></i> Umsatz
               </button>
             </li>
           </ul>
@@ -1094,6 +1198,133 @@
               </div>
             </div>
 
+            <!-- TAB 4: UMSATZ (PIN-GESCHÜTZT: PIN 1895) -->
+            <div class="tab-pane fade" id="statsTabPane" role="tabpanel">
+              
+              <!-- PIN LOCK SCREEN -->
+              <div id="statsPinScreen" class="py-4 text-center">
+                <div class="mb-3">
+                  <div class="rounded-circle bg-warning bg-opacity-25 d-inline-flex p-3 text-warning mb-2">
+                    <i class="bi bi-shield-lock-fill fs-1"></i>
+                  </div>
+                  <h5 class="fw-bold mb-1">PIN-Eingabe erforderlich</h5>
+                  <p class="text-muted small">Der Bereich Umsatz ist geschützt. Bitte 4-stelligen PIN eingeben.</p>
+                </div>
+
+                <!-- PIN Display Dots -->
+                <div class="d-flex justify-content-center mb-2">
+                  <div class="border rounded bg-light px-4 py-2 font-monospace fw-bold pin-display-dots" id="pinDisplayDots">
+                    ____
+                  </div>
+                </div>
+                <div id="statsPinError" class="text-danger small fw-bold mb-3" style="min-height: 22px; display: none;">
+                  <i class="bi bi-exclamation-triangle-fill me-1"></i> Falscher PIN! Bitte erneut versuchen.
+                </div>
+
+                <!-- Touch Numpad (Optimiert für Tablets & Touchscreens) -->
+                <div class="d-inline-block">
+                  <div class="d-flex justify-content-center">
+                    <button type="button" class="btn btn-outline-dark pin-numpad-btn" onclick="pressPinDigit('1')">1</button>
+                    <button type="button" class="btn btn-outline-dark pin-numpad-btn" onclick="pressPinDigit('2')">2</button>
+                    <button type="button" class="btn btn-outline-dark pin-numpad-btn" onclick="pressPinDigit('3')">3</button>
+                  </div>
+                  <div class="d-flex justify-content-center">
+                    <button type="button" class="btn btn-outline-dark pin-numpad-btn" onclick="pressPinDigit('4')">4</button>
+                    <button type="button" class="btn btn-outline-dark pin-numpad-btn" onclick="pressPinDigit('5')">5</button>
+                    <button type="button" class="btn btn-outline-dark pin-numpad-btn" onclick="pressPinDigit('6')">6</button>
+                  </div>
+                  <div class="d-flex justify-content-center">
+                    <button type="button" class="btn btn-outline-dark pin-numpad-btn" onclick="pressPinDigit('7')">7</button>
+                    <button type="button" class="btn btn-outline-dark pin-numpad-btn" onclick="pressPinDigit('8')">8</button>
+                    <button type="button" class="btn btn-outline-dark pin-numpad-btn" onclick="pressPinDigit('9')">9</button>
+                  </div>
+                  <div class="d-flex justify-content-center">
+                    <button type="button" class="btn btn-outline-danger pin-numpad-btn" onclick="clearPinInput()" title="Zurücksetzen">
+                      <i class="bi bi-backspace"></i>
+                    </button>
+                    <button type="button" class="btn btn-outline-dark pin-numpad-btn" onclick="pressPinDigit('0')">0</button>
+                    <button type="button" class="btn btn-success pin-numpad-btn text-white" onclick="submitPinInput()" title="Bestätigen">
+                      <i class="bi bi-check-lg"></i>
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+              <!-- UNLOCKED STATS CONTENT SCREEN -->
+              <div id="statsContentScreen" style="display: none;">
+                <div class="d-flex justify-content-between align-items-center mb-3 pb-2 border-bottom">
+                  <div>
+                    <h5 class="fw-bold mb-0 text-success">
+                      <i class="bi bi-cash-coin me-1"></i> Tagesumsatz & Abrechnung
+                    </h5>
+                    <div class="small text-muted">Aktuelle Verkaufszahlen des Festbetriebs</div>
+                  </div>
+                  <button type="button" class="btn btn-outline-secondary btn-sm fw-semibold" onclick="lockStats()" title="Umsatz wieder sperren">
+                    <i class="bi bi-lock-fill me-1"></i> Bereich sperren
+                  </button>
+                </div>
+
+                <!-- Summary Cards -->
+                <div class="row g-3 mb-4">
+                  <div class="col-6 col-md-4">
+                    <div class="card bg-light border p-3 text-center">
+                      <div class="text-muted small fw-bold text-uppercase">Gesamtumsatz</div>
+                      <div class="fs-3 fw-bold text-success" id="statsTotalRevenue">0,00 €</div>
+                    </div>
+                  </div>
+                  <div class="col-6 col-md-4">
+                    <div class="card bg-light border p-3 text-center">
+                      <div class="text-muted small fw-bold text-uppercase">Bestellungen</div>
+                      <div class="fs-3 fw-bold text-primary" id="statsTotalOrders">0</div>
+                    </div>
+                  </div>
+                  <div class="col-12 col-md-4">
+                    <div class="card bg-light border p-3 text-center">
+                      <div class="text-muted small fw-bold text-uppercase">Verkaufte Artikel</div>
+                      <div class="fs-3 fw-bold text-dark" id="statsTotalItems">0 Stk.</div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Item Breakdown Table -->
+                <h6 class="fw-bold mb-2">Verkaufte Artikel im Detail:</h6>
+                <div class="table-responsive mb-3" style="max-height: 250px;">
+                  <table class="table table-sm table-striped table-hover align-middle">
+                    <thead class="bg-nav-custom text-white">
+                      <tr>
+                        <th>Artikel</th>
+                        <th style="width: 100px; text-align: center;">Anzahl</th>
+                        <th style="width: 120px; text-align: right;">Einzelpreis</th>
+                        <th style="width: 120px; text-align: right;">Gesamt</th>
+                      </tr>
+                    </thead>
+                    <tbody id="statsTableBody">
+                      <!-- Populated dynamically -->
+                    </tbody>
+                  </table>
+                </div>
+
+                <!-- Stats Actions -->
+                <div class="d-flex flex-wrap gap-2 justify-content-between align-items-center pt-2 border-top">
+                  <div class="d-flex gap-2">
+                    <button class="btn btn-outline-success btn-sm fw-bold" onclick="exportStatsCSV()">
+                      <i class="bi bi-file-earmark-spreadsheet me-1"></i> CSV-Export
+                    </button>
+                    <button class="btn btn-outline-dark btn-sm fw-bold" onclick="printReceiptReport()">
+                      <i class="bi bi-printer me-1"></i> Abrechnung drucken
+                    </button>
+                  </div>
+                  <div>
+                    <button class="btn btn-outline-danger btn-sm" onclick="confirmResetStats()">
+                      <i class="bi bi-trash3 me-1"></i> Statistik zurücksetzen
+                    </button>
+                  </div>
+                </div>
+
+              </div>
+
+            </div>
+
           </div>
         </div>
 
@@ -1105,72 +1336,143 @@
     </div>
   </div>
 
-  <!-- STATS / REVENUE REPORT MODAL -->
-  <div class="modal fade" id="statsModal" tabindex="-1" aria-labelledby="statsModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg modal-dialog-centered">
-      <div class="modal-content">
-        <div class="modal-header bg-nav-custom text-white">
-          <h5 class="modal-title fw-bold" id="statsModalLabel">
-            <i class="bi bi-bar-chart-fill text-warning me-2"></i> Kassensturz & Verkaufsstatistik
+  <!-- iOS FULLSCREEN GUIDE MODAL -->
+  <div class="modal fade" id="iosFullscreenModal" tabindex="-1" aria-labelledby="iosFullscreenModalTitle" aria-hidden="true" style="z-index: 1080;">
+    <div class="modal-dialog modal-dialog-centered" style="max-width: 480px;">
+      <div class="modal-content shadow border-0">
+        <div class="modal-header bg-nav-custom text-white py-2">
+          <h5 class="modal-title fw-bold" id="iosFullscreenModalTitle">
+            <i class="bi bi-apple me-2"></i> Vollbild auf iPad & iPhone
           </h5>
           <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Schließen"></button>
         </div>
-        <div class="modal-body p-3 p-md-4">
+        <div class="modal-body p-4">
+          <p class="text-secondary small mb-3">
+            Apple Safari blockiert auf iOS das automatische Umschalten in den Vollbildmodus per Web-Button. Du kannst die Kasse aber mit 2 Klicks im <strong>echten Vollbild ohne Safari-Leisten</strong> nutzen:
+          </p>
+
+          <div class="card bg-light border p-3 mb-3">
+            <div class="d-flex align-items-start gap-3">
+              <span class="badge bg-primary rounded-circle p-2 fs-6">1</span>
+              <div>
+                <div class="fw-bold text-dark">Als App auf den Home-Bildschirm legen (Empfohlen)</div>
+                <div class="small text-muted mt-1">
+                  1. Tippe in Safari unten (oder oben) auf das <strong>Teilen-Symbol</strong> (<i class="bi bi-box-arrow-up text-primary fw-bold"></i> Viereck mit Pfeil).<br>
+                  2. Scrolle zu <strong>„Zum Home-Bildschirm“</strong> (<i class="bi bi-plus-square text-dark"></i>) und tippe darauf.<br>
+                  3. Starte die Kasse über das neue Icon auf deinem Bildschirm – sie öffnet sich ab jetzt immer im <strong>echten 100% App-Vollbild</strong>!
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="card bg-light border p-3">
+            <div class="d-flex align-items-start gap-3">
+              <span class="badge bg-secondary rounded-circle p-2 fs-6">2</span>
+              <div>
+                <div class="fw-bold text-dark">Schnelle Alternative im Browser</div>
+                <div class="small text-muted mt-1">
+                  Tippe in der Safari-Adressleiste links auf <strong>„aA“</strong> und wähle <strong>„Symbolleiste ausblenden“</strong>.
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer bg-light justify-content-end py-2">
+          <button type="button" class="btn btn-primary px-4 fw-bold" data-bs-dismiss="modal">Verstanden</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TOUCH NUMPAD MODAL FÜR GEGEBEN-BETRAG -->
+  <div class="modal fade" id="givenKeypadModal" tabindex="-1" aria-labelledby="givenKeypadModalTitle" aria-hidden="true" style="z-index: 1070;">
+    <div class="modal-dialog modal-dialog-centered" style="max-width: 380px;">
+      <div class="modal-content shadow border-0">
+        
+        <!-- Header -->
+        <div class="modal-header bg-nav-custom text-white py-2 px-3">
+          <h6 class="modal-title fw-bold" id="givenKeypadModalTitle">
+            <i class="bi bi-calculator-fill me-2 text-warning"></i> Gegebenen Betrag eingeben
+          </h6>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Schließen"></button>
+        </div>
+
+        <div class="modal-body p-3 text-center">
           
-          <!-- Summary Cards -->
-          <div class="row g-3 mb-4">
-            <div class="col-6 col-md-4">
-              <div class="card bg-light border p-3 text-center">
-                <div class="text-muted small fw-bold text-uppercase">Gesamtumsatz</div>
-                <div class="fs-3 fw-bold text-success" id="statsTotalRevenue">0,00 €</div>
-              </div>
+          <!-- Summary Info Bar: Zu zahlen & Rückgeld -->
+          <div class="d-flex justify-content-between align-items-center bg-light rounded-3 p-2 px-3 mb-2 border">
+            <div class="text-start">
+              <span class="text-muted small fw-bold d-block" style="font-size: 0.72rem;">ZU ZAHLEN</span>
+              <span class="fw-bold fs-5 text-dark" id="keypadTotalDisplay">0,00 €</span>
             </div>
-            <div class="col-6 col-md-4">
-              <div class="card bg-light border p-3 text-center">
-                <div class="text-muted small fw-bold text-uppercase">Bestellungen</div>
-                <div class="fs-3 fw-bold text-primary" id="statsTotalOrders">0</div>
-              </div>
-            </div>
-            <div class="col-12 col-md-4">
-              <div class="card bg-light border p-3 text-center">
-                <div class="text-muted small fw-bold text-uppercase">Verkaufte Artikel</div>
-                <div class="fs-3 fw-bold text-dark" id="statsTotalItems">0 Stk.</div>
-              </div>
+            <div class="text-end">
+              <span class="text-muted small fw-bold d-block" style="font-size: 0.72rem;" id="keypadChangeLabel">RÜCKGELD</span>
+              <span class="fw-bold fs-5 text-success" id="keypadChangeDisplay">0,00 €</span>
             </div>
           </div>
 
-          <!-- Item Breakdown Table -->
-          <h6 class="fw-bold mb-2">Verkaufte Artikel im Detail:</h6>
-          <div class="table-responsive mb-3" style="max-height: 250px;">
-            <table class="table table-sm table-striped table-hover align-middle">
-              <thead class="bg-nav-custom text-white">
-                <tr>
-                  <th>Artikel</th>
-                  <th style="width: 100px; text-align: center;">Anzahl</th>
-                  <th style="width: 120px; text-align: right;">Einzelpreis</th>
-                  <th style="width: 120px; text-align: right;">Gesamt</th>
-                </tr>
-              </thead>
-              <tbody id="statsTableBody">
-                <!-- Populated dynamically -->
-              </tbody>
-            </table>
+          <!-- Large Display of Given Amount -->
+          <div class="border rounded-3 bg-white p-2 mb-2 shadow-sm d-flex justify-content-between align-items-center px-3">
+            <span class="text-muted small fw-bold">Gegeben:</span>
+            <div class="keypad-display" id="keypadValueDisplay">0,00 €</div>
           </div>
 
-          <!-- Stats Actions -->
-          <div class="d-flex justify-content-between align-items-center pt-2 border-top">
-            <button class="btn btn-outline-danger btn-sm" onclick="confirmResetStats()">
-              <i class="bi bi-trash3"></i> Statistik zurücksetzen
-            </button>
-            <button class="btn btn-outline-primary btn-sm" onclick="exportStatsCSV()">
-              <i class="bi bi-file-earmark-spreadsheet"></i> CSV Export für Kassenwart
-            </button>
+          <!-- Quick Cash Presets Row -->
+          <div class="d-flex gap-1 justify-content-center mb-2">
+            <button type="button" class="btn btn-outline-secondary btn-sm fw-bold flex-grow-1 py-1" onclick="keypadApplyPreset('exact')">Passend</button>
+            <button type="button" class="btn btn-outline-secondary btn-sm fw-bold flex-grow-1 py-1" onclick="keypadApplyPreset(5)">5 €</button>
+            <button type="button" class="btn btn-outline-secondary btn-sm fw-bold flex-grow-1 py-1" onclick="keypadApplyPreset(10)">10 €</button>
+            <button type="button" class="btn btn-outline-secondary btn-sm fw-bold flex-grow-1 py-1" onclick="keypadApplyPreset(20)">20 €</button>
+            <button type="button" class="btn btn-outline-secondary btn-sm fw-bold flex-grow-1 py-1" onclick="keypadApplyPreset(50)">50 €</button>
+          </div>
+
+          <!-- Touch Numpad Grid -->
+          <div class="d-inline-block">
+            <div class="d-flex justify-content-center">
+              <button type="button" class="btn btn-outline-dark keypad-btn" onclick="keypadPressDigit('1')">1</button>
+              <button type="button" class="btn btn-outline-dark keypad-btn" onclick="keypadPressDigit('2')">2</button>
+              <button type="button" class="btn btn-outline-dark keypad-btn" onclick="keypadPressDigit('3')">3</button>
+            </div>
+            <div class="d-flex justify-content-center">
+              <button type="button" class="btn btn-outline-dark keypad-btn" onclick="keypadPressDigit('4')">4</button>
+              <button type="button" class="btn btn-outline-dark keypad-btn" onclick="keypadPressDigit('5')">5</button>
+              <button type="button" class="btn btn-outline-dark keypad-btn" onclick="keypadPressDigit('6')">6</button>
+            </div>
+            <div class="d-flex justify-content-center">
+              <button type="button" class="btn btn-outline-dark keypad-btn" onclick="keypadPressDigit('7')">7</button>
+              <button type="button" class="btn btn-outline-dark keypad-btn" onclick="keypadPressDigit('8')">8</button>
+              <button type="button" class="btn btn-outline-dark keypad-btn" onclick="keypadPressDigit('9')">9</button>
+            </div>
+            <div class="d-flex justify-content-center">
+              <button type="button" class="btn btn-outline-danger keypad-btn" onclick="keypadPressClear()" title="Eingabe leeren">C</button>
+              <button type="button" class="btn btn-outline-dark keypad-btn" onclick="keypadPressDigit('0')">0</button>
+              <button type="button" class="btn btn-outline-dark keypad-btn" onclick="keypadPressComma()">,</button>
+            </div>
+            <div class="d-flex justify-content-center">
+              <button type="button" class="btn btn-outline-secondary keypad-btn" style="width: 138px;" onclick="keypadPressBackspace()" title="Letzte Ziffer löschen">
+                <i class="bi bi-backspace me-1"></i> Löschen
+              </button>
+              <button type="button" class="btn btn-primary keypad-btn" style="width: 66px;" data-bs-dismiss="modal" onclick="keypadApplyGiven()" title="Übernehmen">
+                <i class="bi bi-check-lg"></i>
+              </button>
+            </div>
           </div>
 
         </div>
-        <div class="modal-footer bg-light">
-          <button type="button" class="btn btn-secondary fw-bold" data-bs-dismiss="modal">Schließen</button>
+
+        <!-- Action Footer -->
+        <div class="modal-footer bg-light p-2 justify-content-between">
+          <button type="button" class="btn btn-outline-secondary fw-bold" data-bs-dismiss="modal">Abbrechen</button>
+          <div class="d-flex gap-2">
+            <button type="button" class="btn btn-primary fw-bold" data-bs-dismiss="modal" onclick="keypadApplyGiven()">
+              <i class="bi bi-check2 me-1"></i> Übernehmen
+            </button>
+            <button type="button" class="btn btn-success fw-bold" id="keypadDirectPayBtn" onclick="keypadDirectPay()">
+              <i class="bi bi-check-circle-fill me-1"></i> Direkt Bezahlt
+            </button>
+          </div>
         </div>
+
       </div>
     </div>
   </div>
@@ -1206,10 +1508,10 @@
      */
 
     // --- DEFAULT DATA & CONFIG ---
-    const CURRENT_MENU_VERSION = "tsv_billigheim_2025_v2";
+    const CURRENT_MENU_VERSION = "tsv_billigheim_2025_v3";
 
     const DEFAULT_ARTICLES = [
-      // Getränke
+      // 1. Getränke (Zeile 1 in der Gesamtansicht)
       { id: "art_1", name: "Cola, Fanta, Spezi, Johannisbeersch., Apfelsch. 0,4l", price: 3.00, category: "drink" },
       { id: "art_2", name: "Sprudel 0,7l", price: 2.50, category: "drink" },
       { id: "art_3", name: "Bier, Radler 0,4l", price: 3.50, category: "drink" },
@@ -1219,12 +1521,7 @@
       { id: "art_7", name: "Wein 0,25l", price: 3.50, category: "drink" },
       { id: "art_8", name: "Schnaps, Jägermeister", price: 2.00, category: "drink" },
 
-      // Kaffee & Kuchen
-      { id: "art_9", name: "Kaffee Pott", price: 2.00, category: "sweets" },
-      { id: "art_10", name: "Muffins", price: 1.00, category: "sweets" },
-      { id: "art_11", name: "Kuchen", price: 2.00, category: "sweets" },
-
-      // Essen & Besengerichte
+      // 2. Essen & Besengerichte (Zeilen 2 & 3 in der Gesamtansicht)
       { id: "art_12", name: "Schlachtplatte m. Sauerkraut und Besenbrot (Leber- Blutwurst, Salzfleisch, Bauch)", price: 10.00, category: "food" },
       { id: "art_13", name: "Hausmacherteller mit Besenbrot (Leber- Blutwurst und Schwartenmagen)", price: 6.50, category: "food" },
       { id: "art_14", name: "1P grobe Bratwürste mit Besenbrot", price: 6.00, category: "food" },
@@ -1241,15 +1538,20 @@
       { id: "art_25", name: "Metzelpfeffer mit Brot", price: 2.00, category: "food" },
       { id: "art_26", name: "Brot", price: 0.50, category: "food" },
 
-      // Pfand
+      // 3. Kaffee & Kuchen (Ganz unten: Zeile 4)
+      { id: "art_9", name: "Kaffee Pott", price: 2.00, category: "sweets" },
+      { id: "art_10", name: "Muffins", price: 1.00, category: "sweets" },
+      { id: "art_11", name: "Kuchen", price: 2.00, category: "sweets" },
+
+      // 4. Pfand (Ebenfalls in Zeile 4)
       { id: "art_27", name: "Pfand (+)", price: 2.00, category: "deposit" },
       { id: "art_28", name: "Pfand-Rückgabe (-)", price: -2.00, category: "deposit" }
     ];
 
     const CATEGORY_NAMES = {
       all: "Alle Artikel",
-      food: "Essen & Vesper",
       drink: "Getränke",
+      food: "Essen & Vesper",
       sweets: "Kaffee & Kuchen",
       deposit: "Pfand",
       other: "Sonstiges"
@@ -1333,6 +1635,11 @@
       renderProductGrid();
       renderCart();
       updateHeader();
+      if (givenAmount > 0) {
+        const input = document.getElementById('givenInput');
+        if (input) input.value = formatCurrency(givenAmount);
+        updateChangeCalculation();
+      }
     });
 
     // --- STORAGE HANDLING ---
@@ -1373,7 +1680,30 @@
         }
       }
 
+      // Active Cart & Given Amount (Warenkorb zwischenspeichern gegen versehentliches Neuladen)
+      const savedCart = localStorage.getItem('kasse_active_cart');
+      if (savedCart) {
+        try {
+          cart = JSON.parse(savedCart) || {};
+        } catch (e) {
+          cart = {};
+        }
+      }
+      const savedGiven = localStorage.getItem('kasse_active_given');
+      if (savedGiven) {
+        try {
+          givenAmount = JSON.parse(savedGiven) || 0;
+        } catch (e) {
+          givenAmount = 0;
+        }
+      }
+
       updateDailyTurnoverDisplay();
+    }
+
+    function saveCartToStorage() {
+      localStorage.setItem('kasse_active_cart', JSON.stringify(cart));
+      localStorage.setItem('kasse_active_given', JSON.stringify(givenAmount));
     }
 
     function saveArticlesToStorage() {
@@ -1417,7 +1747,11 @@
 
     function updateDailyTurnoverDisplay() {
       const total = salesHistory.reduce((sum, order) => sum + (order.total || 0), 0);
-      document.getElementById('headerDailyTurnover').textContent = formatCurrency(total);
+      const headerEl = document.getElementById('headerDailyTurnover');
+      if (headerEl) headerEl.textContent = formatCurrency(total);
+      if (typeof isStatsUnlocked !== 'undefined' && isStatsUnlocked) {
+        renderStatsModal();
+      }
     }
 
     // --- CURRENCY FORMATTER ---
@@ -1487,6 +1821,13 @@
         grid.classList.remove('grid-all-view');
       } else {
         grid.classList.add('grid-all-view');
+        // Sort by category priority: Getränke (1) -> Essen (2) -> Kaffee & Kuchen (3) -> Pfand (4) -> Sonstiges (5)
+        const catOrder = { drink: 1, food: 2, sweets: 3, deposit: 4, other: 5 };
+        filtered = [...filtered].sort((a, b) => {
+          const pA = catOrder[a.category || 'other'] || 99;
+          const pB = catOrder[b.category || 'other'] || 99;
+          return pA - pB;
+        });
       }
 
       if (filtered.length === 0) {
@@ -1499,6 +1840,9 @@
         return;
       }
 
+      let firstFoodSeen = false;
+      let firstSweetsSeen = false;
+
       let html = '';
       filtered.forEach(art => {
         const countInCart = cart[art.id] || 0;
@@ -1506,13 +1850,28 @@
           ? `<span class="prod-badge-count">${countInCart}x</span>` 
           : '';
 
-        const catClass = `category-${art.category || 'other'}`;
+        const cat = art.category || 'other';
+        const catClass = `category-${cat}`;
         const catIconHtml = getCategoryIconHtml(art.category, art.name);
         const catShortLabel = getCategoryShortLabel(art.category, art.name);
         const titleHtml = renderProductTitleHtml(art.name);
 
+        let breakClass = '';
+        if (currentCategoryFilter === 'all') {
+          // Food starts on Row 2
+          if (cat === 'food' && !firstFoodSeen) {
+            breakClass = ' grid-row-break';
+            firstFoodSeen = true;
+          }
+          // Sweets (Kaffee & Kuchen) starts on Row 4 (bottom row)
+          else if (cat === 'sweets' && !firstSweetsSeen) {
+            breakClass = ' grid-row-break';
+            firstSweetsSeen = true;
+          }
+        }
+
         html += `
-          <div class="product-tile ${catClass}" onclick="addToCart('${art.id}')" title="${escapeHtml(art.name)}">
+          <div class="product-tile ${catClass}${breakClass}" onclick="addToCart('${art.id}')" title="${escapeHtml(art.name)}">
             ${badgeHtml}
             <div class="prod-title">${titleHtml}</div>
             <div class="prod-tile-icon">${catIconHtml}</div>
@@ -1817,6 +2176,7 @@
       payButton.disabled = total === 0 && itemIds.length === 0;
 
       updateChangeCalculation();
+      saveCartToStorage();
     }
 
     function resetCart(askConfirm = false) {
@@ -1839,6 +2199,7 @@
       playBeep('click');
       cart = {};
       clearGiven();
+      saveCartToStorage();
       renderCart();
       renderProductGrid();
     }
@@ -1847,6 +2208,7 @@
     function handleGivenChange(val) {
       givenAmount = parseFloat(val) || 0;
       updateChangeCalculation();
+      saveCartToStorage();
     }
 
     function setGivenExact() {
@@ -1855,22 +2217,220 @@
       const total = calculateCartTotal();
       if (total <= 0) return;
       givenAmount = total;
-      document.getElementById('givenInput').value = total.toFixed(2);
+      const input = document.getElementById('givenInput');
+      if (input) input.value = formatCurrency(total);
       updateChangeCalculation();
+      saveCartToStorage();
     }
 
     function setGivenPreset(amount) {
       playBeep('click');
       triggerHaptic();
       givenAmount = amount;
-      document.getElementById('givenInput').value = amount.toFixed(2);
+      const input = document.getElementById('givenInput');
+      if (input) input.value = formatCurrency(amount);
       updateChangeCalculation();
+      saveCartToStorage();
     }
 
     function clearGiven() {
       givenAmount = 0;
-      document.getElementById('givenInput').value = '';
+      const input = document.getElementById('givenInput');
+      if (input) input.value = '';
       updateChangeCalculation();
+      saveCartToStorage();
+    }
+
+    // --- GIVEN KEYPAD OVERLAY LOGIC (TOUCH NUMPAD FÜR TABLETS) ---
+    let keypadRawInput = '';
+
+    function openGivenKeypad() {
+      playBeep('click');
+      const total = calculateCartTotal();
+      if (total <= 0 && Object.keys(cart).length === 0) {
+        showToast("Warenkorb leer", "Bitte wähle zuerst Artikel aus.");
+        return;
+      }
+
+      if (givenAmount > 0) {
+        keypadRawInput = givenAmount.toFixed(2).replace('.', ',');
+      } else {
+        keypadRawInput = '';
+      }
+
+      updateKeypadUI();
+      const modalEl = document.getElementById('givenKeypadModal');
+      const modal = bootstrap.Modal.getOrCreateInstance(modalEl);
+      modal.show();
+    }
+
+    function getKeypadNumericValue() {
+      if (!keypadRawInput) return 0;
+      const clean = keypadRawInput.replace(',', '.');
+      return parseFloat(clean) || 0;
+    }
+
+    function updateKeypadUI() {
+      const total = calculateCartTotal();
+      const val = getKeypadNumericValue();
+
+      const totalDisplay = document.getElementById('keypadTotalDisplay');
+      if (totalDisplay) totalDisplay.textContent = formatCurrency(total);
+
+      const valDisplay = document.getElementById('keypadValueDisplay');
+      if (valDisplay) {
+        if (!keypadRawInput) {
+          valDisplay.textContent = '0,00 €';
+          valDisplay.classList.add('text-muted');
+        } else {
+          valDisplay.textContent = keypadRawInput + ' €';
+          valDisplay.classList.remove('text-muted');
+        }
+      }
+
+      const diff = Math.round((val - total) * 100) / 100;
+      const changeDisplay = document.getElementById('keypadChangeDisplay');
+      const changeLabel = document.getElementById('keypadChangeLabel');
+      const directPayBtn = document.getElementById('keypadDirectPayBtn');
+
+      if (val <= 0) {
+        if (changeLabel) changeLabel.textContent = 'RÜCKGELD';
+        if (changeDisplay) {
+          changeDisplay.textContent = '0,00 €';
+          changeDisplay.className = 'fw-bold fs-5 text-muted';
+        }
+        if (directPayBtn) directPayBtn.disabled = true;
+      } else if (diff >= 0) {
+        if (changeLabel) changeLabel.textContent = 'RÜCKGELD';
+        if (changeDisplay) {
+          changeDisplay.textContent = formatCurrency(diff);
+          changeDisplay.className = 'fw-bold fs-5 text-success';
+        }
+        if (directPayBtn) directPayBtn.disabled = false;
+      } else {
+        if (changeLabel) changeLabel.textContent = 'FEHLBETRAG';
+        if (changeDisplay) {
+          changeDisplay.textContent = '-' + formatCurrency(Math.abs(diff));
+          changeDisplay.className = 'fw-bold fs-5 text-danger';
+        }
+        if (directPayBtn) directPayBtn.disabled = true;
+      }
+    }
+
+    function keypadPressDigit(digit) {
+      playBeep('click');
+      triggerHaptic();
+
+      if (keypadRawInput.includes(',')) {
+        const parts = keypadRawInput.split(',');
+        if (parts[1] && parts[1].length >= 2) return;
+      }
+
+      if (keypadRawInput.replace(',', '').length >= 7) return;
+
+      if (keypadRawInput === '0') {
+        keypadRawInput = String(digit);
+      } else {
+        keypadRawInput += String(digit);
+      }
+
+      updateKeypadUI();
+    }
+
+    function keypadPressComma() {
+      playBeep('click');
+      triggerHaptic();
+      if (!keypadRawInput) {
+        keypadRawInput = '0,';
+      } else if (!keypadRawInput.includes(',')) {
+        keypadRawInput += ',';
+      }
+      updateKeypadUI();
+    }
+
+    function keypadPressBackspace() {
+      playBeep('click');
+      triggerHaptic();
+      if (keypadRawInput.length > 0) {
+        keypadRawInput = keypadRawInput.slice(0, -1);
+      }
+      updateKeypadUI();
+    }
+
+    function keypadPressClear() {
+      playBeep('click');
+      triggerHaptic();
+      keypadRawInput = '';
+      updateKeypadUI();
+    }
+
+    function keypadApplyPreset(preset) {
+      playBeep('click');
+      triggerHaptic();
+      if (preset === 'exact') {
+        const total = calculateCartTotal();
+        keypadRawInput = total > 0 ? total.toFixed(2).replace('.', ',') : '';
+      } else {
+        keypadRawInput = Number(preset).toFixed(2).replace('.', ',');
+      }
+      updateKeypadUI();
+    }
+
+    function keypadApplyGiven() {
+      playBeep('click');
+      const val = getKeypadNumericValue();
+      givenAmount = val;
+      const input = document.getElementById('givenInput');
+      if (input) {
+        input.value = val > 0 ? formatCurrency(val) : '';
+      }
+      updateChangeCalculation();
+      saveCartToStorage();
+
+      const modalEl = document.getElementById('givenKeypadModal');
+      if (modalEl) {
+        const modal = bootstrap.Modal.getOrCreateInstance(modalEl);
+        if (modal) modal.hide();
+      }
+
+      // Backdrop-Bereinigung sicherstellen, damit der Bildschirm niemals ausgegraut einfriert
+      setTimeout(() => {
+        document.querySelectorAll('.modal-backdrop').forEach(el => el.remove());
+        document.body.classList.remove('modal-open');
+        document.body.style.overflow = '';
+        document.body.style.paddingRight = '';
+      }, 200);
+    }
+
+    function keypadDirectPay() {
+      const val = getKeypadNumericValue();
+      const total = calculateCartTotal();
+      if (val < total) {
+        playBeep('warn');
+        showToast("Betrag zu gering", "Der gegebene Betrag reicht nicht aus.");
+        return;
+      }
+      givenAmount = val;
+      const input = document.getElementById('givenInput');
+      if (input) {
+        input.value = formatCurrency(val);
+      }
+      updateChangeCalculation();
+      saveCartToStorage();
+
+      const modalEl = document.getElementById('givenKeypadModal');
+      if (modalEl) {
+        const modal = bootstrap.Modal.getOrCreateInstance(modalEl);
+        if (modal) modal.hide();
+      }
+
+      setTimeout(() => {
+        document.querySelectorAll('.modal-backdrop').forEach(el => el.remove());
+        document.body.classList.remove('modal-open');
+        document.body.style.overflow = '';
+        document.body.style.paddingRight = '';
+        completeCheckout();
+      }, 250);
     }
 
     function updateChangeCalculation() {
@@ -1976,26 +2536,76 @@
       }, 3500);
     }
 
-    // --- FULLSCREEN HANDLER ---
+    // --- FULLSCREEN HANDLER MIT iOS SAFARI & VENDOR-PREFIX UNTERSTÜTZUNG ---
+    function isIOSDevice() {
+      return (
+        /iPad|iPhone|iPod/.test(navigator.userAgent) ||
+        (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1)
+      );
+    }
+
     function toggleFullscreen() {
       playBeep('click');
-      if (!document.fullscreenElement) {
-        document.documentElement.requestFullscreen().catch(err => {
-          showToast("Vollbild", "Tippe F11 auf der Tastatur für den Vollbildmodus.");
-        });
+      const doc = document;
+      const docEl = doc.documentElement;
+      const isFs = !!(doc.fullscreenElement || doc.webkitFullscreenElement || doc.mozFullScreenElement || doc.msFullscreenElement);
+
+      if (!isFs) {
+        // Auf iOS prüfen, ob App bereits im Standalone-Vollbildmodus läuft
+        if (isIOSDevice() && window.navigator.standalone) {
+          showToast("Vollbild", "Die Kasse läuft bereits im App-Vollbildmodus auf dem Home-Bildschirm.");
+          return;
+        }
+
+        const requestFs = docEl.requestFullscreen || docEl.webkitRequestFullscreen || docEl.webkitRequestFullScreen || docEl.mozRequestFullScreen || docEl.msRequestFullscreen;
+
+        if (requestFs && typeof requestFs === 'function') {
+          try {
+            const promise = requestFs.call(docEl);
+            if (promise && typeof promise.catch === 'function') {
+              promise.catch(() => {
+                handleFullscreenFailure();
+              });
+            }
+          } catch (e) {
+            handleFullscreenFailure();
+          }
+        } else {
+          handleFullscreenFailure();
+        }
       } else {
-        if (document.exitFullscreen) {
-          document.exitFullscreen().catch(err => {});
+        const exitFs = doc.exitFullscreen || doc.webkitExitFullscreen || doc.webkitCancelFullScreen || doc.mozCancelFullScreen || doc.msExitFullscreen;
+        if (exitFs && typeof exitFs === 'function') {
+          try {
+            const promise = exitFs.call(doc);
+            if (promise && typeof promise.catch === 'function') {
+              promise.catch(() => {});
+            }
+          } catch (e) {}
         }
       }
     }
 
-    document.addEventListener('fullscreenchange', updateFullscreenUI);
+    function handleFullscreenFailure() {
+      if (isIOSDevice()) {
+        const modal = new bootstrap.Modal(document.getElementById('iosFullscreenModal'));
+        modal.show();
+      } else {
+        showToast("Vollbild", "Tippe F11 auf der Tastatur für den Vollbildmodus.");
+      }
+    }
+
+    // Vollbild-Events für alle Browser (inkl. WebKit & iPadOS) abhören
+    ['fullscreenchange', 'webkitfullscreenchange', 'mozfullscreenchange', 'MSFullscreenChange'].forEach(evt => {
+      document.addEventListener(evt, updateFullscreenUI);
+    });
+
     function updateFullscreenUI() {
       const icon = document.getElementById('fullscreenIcon');
       const text = document.getElementById('fullscreenText');
       const btn = document.getElementById('fullscreenBtn');
-      const isFs = !!document.fullscreenElement;
+      const doc = document;
+      const isFs = !!(doc.fullscreenElement || doc.webkitFullscreenElement || doc.mozFullScreenElement || doc.msFullscreenElement || (isIOSDevice() && window.navigator.standalone));
 
       if (icon) {
         icon.className = isFs ? 'bi bi-fullscreen-exit' : 'bi bi-arrows-fullscreen';
@@ -2019,9 +2629,40 @@
     // --- SETTINGS MODAL & ARTICLE MANAGER ---
     function openSettingsModal() {
       renderArticleManagerTable();
-      const modal = new bootstrap.Modal(document.getElementById('settingsModal'));
+      const modal = bootstrap.Modal.getOrCreateInstance(document.getElementById('settingsModal'));
       modal.show();
     }
+
+    // Beim Schließen des Einstellungsfensters wird der Umsatzbereich automatisch wieder verriegelt
+    document.addEventListener('DOMContentLoaded', () => {
+      const settingsModalEl = document.getElementById('settingsModal');
+      if (settingsModalEl) {
+        settingsModalEl.addEventListener('hidden.bs.modal', () => {
+          if (typeof lockStats === 'function') {
+            lockStats(false);
+          }
+          const articlesTabBtn = document.getElementById('articles-tab');
+          if (articlesTabBtn) {
+            const tab = bootstrap.Tab.getOrCreateInstance(articlesTabBtn);
+            tab.show();
+          }
+          document.querySelectorAll('.modal-backdrop').forEach(el => el.remove());
+          document.body.classList.remove('modal-open');
+          document.body.style.overflow = '';
+          document.body.style.paddingRight = '';
+        });
+      }
+
+      const givenModalEl = document.getElementById('givenKeypadModal');
+      if (givenModalEl) {
+        givenModalEl.addEventListener('hidden.bs.modal', () => {
+          document.querySelectorAll('.modal-backdrop').forEach(el => el.remove());
+          document.body.classList.remove('modal-open');
+          document.body.style.overflow = '';
+          document.body.style.paddingRight = '';
+        });
+      }
+    });
 
     function renderArticleManagerTable() {
       const tbody = document.getElementById('articleManagerTableBody');
@@ -2242,11 +2883,120 @@
       }));
     }
 
-    // --- STATS & REVENUE MODAL ---
-    function openStatsModal() {
+    // --- UMSATZ & PIN AUTHENTIFIZIERUNG (PIN: 1895) ---
+    const STATS_PIN = "1895";
+    let isStatsUnlocked = false;
+    let currentPinInput = "";
+
+    function onUmsatzTabClicked() {
+      playBeep('click');
+      if (isStatsUnlocked) {
+        showStatsScreen();
+      } else {
+        showPinScreen();
+      }
+    }
+
+    function showPinScreen() {
+      currentPinInput = "";
+      updatePinDisplay();
+      const err = document.getElementById('statsPinError');
+      if (err) err.style.display = 'none';
+      const pinScreen = document.getElementById('statsPinScreen');
+      const contentScreen = document.getElementById('statsContentScreen');
+      if (pinScreen) pinScreen.style.display = 'block';
+      if (contentScreen) contentScreen.style.display = 'none';
+    }
+
+    function showStatsScreen() {
+      const pinScreen = document.getElementById('statsPinScreen');
+      const contentScreen = document.getElementById('statsContentScreen');
+      if (pinScreen) pinScreen.style.display = 'none';
+      if (contentScreen) contentScreen.style.display = 'block';
       renderStatsModal();
-      const modal = new bootstrap.Modal(document.getElementById('statsModal'));
-      modal.show();
+    }
+
+    function pressPinDigit(digit) {
+      playBeep('click');
+      triggerHaptic();
+      if (currentPinInput.length < 4) {
+        currentPinInput += String(digit);
+        updatePinDisplay();
+      }
+      const err = document.getElementById('statsPinError');
+      if (err) err.style.display = 'none';
+
+      // Automatisch absenden sobald 4 Ziffern eingegeben wurden
+      if (currentPinInput.length === 4) {
+        setTimeout(submitPinInput, 150);
+      }
+    }
+
+    function clearPinInput() {
+      playBeep('click');
+      currentPinInput = "";
+      updatePinDisplay();
+      const err = document.getElementById('statsPinError');
+      if (err) err.style.display = 'none';
+    }
+
+    function submitPinInput() {
+      if (currentPinInput === STATS_PIN) {
+        playBeep('success');
+        triggerHaptic();
+        isStatsUnlocked = true;
+        currentPinInput = "";
+        showStatsScreen();
+      } else {
+        playBeep('warn');
+        triggerHaptic();
+        const err = document.getElementById('statsPinError');
+        if (err) err.style.display = 'block';
+        currentPinInput = "";
+        updatePinDisplay();
+      }
+    }
+
+    function updatePinDisplay() {
+      const display = document.getElementById('pinDisplayDots');
+      if (!display) return;
+      if (currentPinInput.length === 0) {
+        display.textContent = '____';
+      } else {
+        let dots = '';
+        for (let i = 0; i < 4; i++) {
+          if (i < currentPinInput.length) {
+            dots += '● ';
+          } else {
+            dots += '_ ';
+          }
+        }
+        display.textContent = dots.trim();
+      }
+    }
+
+    function lockStats(showNotification = true) {
+      if (showNotification) playBeep('click');
+      isStatsUnlocked = false;
+      showPinScreen();
+      if (showNotification) {
+        showToast("Umsatz gesperrt", "Der Bereich wurde wieder verriegelt.");
+      }
+    }
+
+    function openStatsModal() {
+      openSettingsModal();
+      const statsTabTrigger = document.getElementById('stats-tab');
+      if (statsTabTrigger) {
+        const tab = bootstrap.Tab.getOrCreateInstance(statsTabTrigger);
+        tab.show();
+      }
+      onUmsatzTabClicked();
+    }
+
+    function printReceiptReport() {
+      playBeep('click');
+      window.print();
     }
 
     function renderStatsModal() {
@@ -2335,6 +3085,31 @@
 
     // --- KEYBOARD SHORTCUTS FOR CONVENIENCE ---
     document.addEventListener('keydown', (e) => {
+      // Wenn das Gegeben-Tastenfeld geöffnet ist, physische Zahlentasten unterstützen
+      const givenModal = document.getElementById('givenKeypadModal');
+      if (givenModal && givenModal.classList.contains('show')) {
+        if (e.key >= '0' && e.key <= '9') {
+          e.preventDefault();
+          keypadPressDigit(e.key);
+        } else if (e.key === ',' || e.key === '.') {
+          e.preventDefault();
+          keypadPressComma();
+        } else if (e.key === 'Backspace') {
+          e.preventDefault();
+          keypadPressBackspace();
+        } else if (e.key === 'Enter') {
+          e.preventDefault();
+          const val = getKeypadNumericValue();
+          const total = calculateCartTotal();
+          if (val >= total && total > 0) {
+            keypadDirectPay();
+          } else {
+            keypadApplyGiven();
+          }
+        }
+        return;
+      }
+
       // Don't trigger shortcuts if focus is in modal or input
       if (['INPUT', 'TEXTAREA', 'SELECT'].includes(document.activeElement.tagName)) {
         if (e.key === 'Escape') {
